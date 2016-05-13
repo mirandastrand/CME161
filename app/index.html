@@ -12,6 +12,9 @@
 		<!-- crossfilter_baseball -->
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.3.0/css/bootstrap-slider.min.css" rel="stylesheet">
 
+		<!-- dc iris -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.css" rel="stylesheet">
+
 </head>
 <body>
 	<!-- begin wrap -->		
@@ -34,9 +37,61 @@
 					</div>
 					<!-- end header -->
 
+					<!-- begin viz 2 -->
+					<div class=".col-xs-12 .col-md-8">
+						<h3>
+							Iris Data Using DC.js
+						</h3>
+
+						<p>
+							This visualization explores the sizes across three species of iris flowers.
+						</p>
+
+						<hr>
+						
+						<!--<canvas id="dc_iris">-->
+
+							<table><tr>
+
+							<td><div style="float:left;">
+							  <h3>Sepal Length</h3>
+							  <div id="sepal_length_chart"></div>
+							</div></td>
+
+							<td><div style="float:left;">
+							  <h3>Sepal Width</h3>
+							  <div id="sepal_width_chart"></div>
+							</div></td>
+
+							<td><div style="float:left;">
+							  <h3>Petal Length</h3>
+							  <div id="petal_length_chart"></div>
+							</div></td>
+
+							<td><div style="float:left;">
+							  <h3>Petal Width</h3>
+							  <div id="petal_width_chart"></div>
+							</div></td>
+
+							<td><div style="float:left;">
+							  <h3>Species</h3>
+							  <div id="species_chart"></div>
+							  </div></td>
+
+							</tr>
+							<tr><td><div style="float:left;" id="resetButton"> </div></td></tr>
+							</table>
+
+						<!--</canvas>-->
+						
+						<hr>
+
+					</div>
+					<!-- end viz 2 -->
+
 					<!-- begin viz 1 -->
 					<div id = "crossfilter_baseball" class=".col-xs-12 .col-md-8">
-					    <h3>Baseball Statistics Using DC.js</h3>
+					    <h3>Baseball Statistics Using Crossfilter.js</h3>
 					    
 					    <hr>
 
@@ -46,8 +101,7 @@
 					    	players appeared in over the years. You can find out 
 					    	more information about this data set 
 					    	<a href="http://www.seanlahman.com/baseball-archive/statistics/" target="_blank">
-					    		here
-					    	</a>.
+					    		here</a>.
 					    </p>
 
 					    <hr>
@@ -95,26 +149,6 @@
 
 					</div>
 					<!-- end viz 1 -->
-									
-
-					<!-- begin viz 2 -->
-					<div class=".col-xs-12 .col-md-8">
-						<h3>
-							Distribution of Wealth Inequality in Developing Nations
-						</h3>
-
-						<p>
-							This visualization shows... The library used is <a href="..." target="_blank">...</a>.
-						</p>
-
-						<hr>
-						
-						<canvas id="some_name"></canvas>
-						
-						<hr>
-
-					</div>
-					<!-- end viz 2 -->
 
 				</div>
 				<!-- end row -->
@@ -140,7 +174,12 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.3.0/bootstrap-slider.min.js'></script>
-     <script src='assets/js/crossfilter_baseball/crossfilter_baseball.js'></script>
+    <script src='assets/js/crossfilter_baseball/crossfilter_baseball.js'></script>
+
+    <!-- dc_iris dependencies -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.min.js'></script>
+    <script src='assets/js/dc_iris/dc_iris.js'></script>
 
 </body>
 </html>
