@@ -53,3 +53,22 @@ body {
   padding-right: 15px;
 }
 
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #fff;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.baseball {
+  font: 10px sans-serif;
+}
