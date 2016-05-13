@@ -96,7 +96,7 @@ var hist = function(data_in, chart_id, value, chart_title) {
     .attr("font-size", 10);
 }
 
-d3.json("https://tranquil-peak-82564.herokuapp.com/api/v1.0/data/baseball/limit/100/",
+d3.json("http://tranquil-peak-82564.herokuapp.com/api/v1.0/data/baseball/limit/100/",
   function(error, games_json) {
     console.log(games_json);
 
