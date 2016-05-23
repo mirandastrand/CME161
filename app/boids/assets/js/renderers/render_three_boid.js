@@ -145,7 +145,7 @@ Boid.prototype.update_mesh = function(){
 
     // calculate momentum and apply it to the color
     var momentum = this.velocity.length() * this.radius;
-    var intensity = momentum/200;
+    var intensity = this.velocity.length() / 150
     if(intensity < 0) intensity = 0;
     if(intensity > 1) intensity = 1;
     this.mesh.material.color.setHSL( intensity, .1 + intensity * .85, .2 + intensity * .4);
