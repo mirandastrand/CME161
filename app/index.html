@@ -41,6 +41,24 @@
 					</div>
 					<!-- end header -->
 
+					<!-- begin boid viz -->
+					<div class=".col-xs-12 .col-md-8">
+						<h3>
+							Boids
+						</h3>
+
+						<p>
+							This visualization uses Three.js and the Boids physics engine to simulate bird flocking.
+						</p>
+
+						<hr>
+
+						<div id="dat_gui_container"></div>
+						<canvas id="three_boid"></canvas>
+
+					</div>
+					<!-- end donut viz -->
+
 					<!-- begin income viz -->
 
 					<div class=".col-xs-12 .col-md-8">
@@ -85,7 +103,7 @@
 					</div>
 					<!-- end donut viz -->
 
-					<!-- begin viz 2 -->
+					<!-- begin iris viz -->
 					<div class=".col-xs-12 .col-md-8">
 						<h3>
 							Iris Data Using DC.js
@@ -135,9 +153,9 @@
 						<hr>
 
 					</div>
-					<!-- end viz 2 -->
+					<!-- end iris viz -->
 
-					<!-- begin viz 1 -->
+					<!-- begin baseball viz -->
 					<div id = "crossfilter_baseball" class=".col-xs-12 .col-md-8">
 					    <h3>Baseball Statistics Using Crossfilter.js</h3>
 					    
@@ -196,7 +214,7 @@
 					    <br>
 
 					</div>
-					<!-- end viz 1 -->
+					<!-- end baseball viz -->
 
 				</div>
 				<!-- end row -->
@@ -236,5 +254,20 @@
     <script src = 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js'></script>
     <script src='assets/js/c3_income/c3_income.js'></script>
 
+    <!-- Boids - Other Libs -->
+	<script src="assets/js/controls/dat.gui.min.js"></script>
+	<script src="assets/js/libs/stats.min.js"></script>
+
+	<!-- Boids - Renderer -->
+	<script src="assets/js/renderers/three.min.js"></script>
+	<script src="assets/js/renderers/Projector.js"></script>
+	<script src="assets/js/renderers/CanvasRenderer.js"></script>
+	<script src="assets/js/controls/OrbitControls.js"></script>
+
+	<!-- Physics - Boid -->
+	<script src="assets/js/physics/physics_boid.js"></script>
+
+	<!-- Render - Boid -->
+	<script src="assets/js/renderers/render_three_boid.js"></script>
 </body>
 </html>
