@@ -1,20 +1,27 @@
+'use strict';
 
-var gumStream;
+navigator.getUserMedia = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-navigator.mediaDevices.getUserMedia({audio: true, video: false},
-    function(stream) {
-        console.log("getting stream");
-         gumStream = stream;
-        // ...
-    },
-    function(error) {
-        console.log('getUserMedia() error', error);
-    });
+var constraints = {
+  audio: false,
+  video: true
+};
+//var video = document.querySelector('video');
 
-// …
-
-if (gumStream.active) {
-    // do something with the stream
-    console.log("gum stream active");
-    console.log(gumStream);
+function successCallback(stream) {
+    console.log("success");
+    console.log(stream);
+  /*window.stream = stream; // stream available to console
+  if (window.URL) {
+    video.src = window.URL.createObjectURL(stream);
+  } else {
+    video.src = stream;
+  }*/
 }
+
+function errorCallback(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
+
+navigator.getUserMedia(constraints, successCallback, errorCallback);
