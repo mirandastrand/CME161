@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+		<meta charset="utf-8">
+		<title>CME 161 Data Visualization</title>
+
+		<!-- site dependencies -->
+		<link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+	<!-- begin visualization -->	
+
+	<div id="dat_gui_container"></div>
+	<canvas id="three_boid"></canvas>
+
+	<!-- end visualization -->
+	
+    <!-- Boids - Other Libs -->
+	<script src="assets/js/controls/dat.gui.min.js"></script>
+	<script src="assets/js/libs/stats.min.js"></script>
+
+	<!-- Boids - Renderer -->
+	<script src="assets/js/renderers/three.min.js"></script>
+	<script src="assets/js/renderers/Projector.js"></script>
+	<script src="assets/js/renderers/CanvasRenderer.js"></script>
+	<script src="assets/js/controls/OrbitControls.js"></script>
+
+	<!-- Physics - Boid -->
+	<script src="assets/js/physics/physics_boid.js"></script>
+
+	<!-- Render - Boid -->
+	<script src="assets/js/renderers/render_three_music.js"></script>
+</body>
+</html>
