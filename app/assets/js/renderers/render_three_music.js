@@ -134,7 +134,7 @@ var BlobMesh = function() {
       var v = y / this.geometry.parameters.heightSegments;
       var a = x % this.geometry.parameters.radius;
       var b = y % this.geometry.parameters.radius;
-      var noise = frequencyData[x * y % 255] / 255;
+      var noise = frequencyData[x * y % 255];
       //var noise = this.noise_detail * Math.random()
       var norm = this.geometry.parameters.radius + noise * 6.5;
     
