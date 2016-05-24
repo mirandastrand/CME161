@@ -43,14 +43,14 @@ navigator.getUserMedia({audio: true}, function(stream) {
 //document.getElementById("text").innerHTML = "test hey";
 
 // Log frequency array at time interval 
-(function(){
+/*(function(){
     if (analyser != null) {
       analyser.getByteFrequencyData(frequencyData);
-      console.log(frequencyData);
+      //console.log(frequencyData);
       //document.getElementById("text").innerHTML = frequencyData[0];
     }
     setTimeout(arguments.callee, 100);
-})();
+})();*/
 
 
 // -----------------------   Three.js Visualizer   -----------------------
@@ -136,7 +136,7 @@ var BlobMesh = function() {
       var b = y % this.geometry.parameters.radius;
       var noise = frequencyData[x * y % 255];
       //var noise = this.noise_detail * Math.random()
-      var norm = this.geometry.parameters.radius + noise * 6.5;
+      var norm = this.geometry.parameters.radius + noise;
     
       vertices[i].x = -norm * 
    Math.cos( this.geometry.parameters.phiStart + u * this.geometry.parameters.phiLength ) * 
