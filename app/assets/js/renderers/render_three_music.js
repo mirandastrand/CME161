@@ -13,7 +13,11 @@ var constraints = {
 function successCallback(stream) {
     console.log("success");
     //console.log(stream);
-    console.log(stream.getAudioTracks());
+    //console.log(stream.getAudioTracks());
+    var left = stream.inputBuffer.getChannelData (0);
+    var right = stream.inputBuffer.getChannelData (1);
+    console.log(left);
+    console.log(right);
 }
 
 function errorCallback(error) {
