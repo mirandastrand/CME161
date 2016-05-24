@@ -43,14 +43,14 @@ navigator.getUserMedia({audio: true}, function(stream) {
 //document.getElementById("text").innerHTML = "test hey";
 
 // Log frequency array at time interval 
-/*(function(){
+(function(){
     if (analyser != null) {
       analyser.getByteFrequencyData(frequencyData);
       //console.log(frequencyData);
       //document.getElementById("text").innerHTML = frequencyData[0];
     }
-    setTimeout(arguments.callee, 100);
-})();*/
+    setTimeout(arguments.callee, 10);
+})();
 
 
 // -----------------------   Three.js Visualizer   -----------------------
