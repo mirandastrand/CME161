@@ -1,7 +1,7 @@
 
 var gumStream;
 
-navigator.mediaDevices.getUserMedia({audio: false, video: true},
+navigator.mediaDevices.getUserMedia({audio: true, video: false},
     function(stream) {
         console.log("getting stream");
          gumStream = stream;
