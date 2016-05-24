@@ -1,3 +1,5 @@
+// Sources: https://developers.google.com/web/updates/2015/07/mediastream-deprecations?hl=en
+
 'use strict';
 
 navigator.getUserMedia = navigator.getUserMedia ||
@@ -7,17 +9,11 @@ var constraints = {
   audio: true,
   video: false
 };
-//var video = document.querySelector('video');
 
 function successCallback(stream) {
     console.log("success");
-    console.log(stream);
-  /*window.stream = stream; // stream available to console
-  if (window.URL) {
-    video.src = window.URL.createObjectURL(stream);
-  } else {
-    video.src = stream;
-  }*/
+    //console.log(stream);
+    console.log(stream.getAudioTracks());
 }
 
 function errorCallback(error) {
