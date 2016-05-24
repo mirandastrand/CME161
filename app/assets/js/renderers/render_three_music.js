@@ -49,7 +49,7 @@ navigator.getUserMedia({audio: true}, function(stream) {
       //console.log(frequencyData);
       //document.getElementById("text").innerHTML = frequencyData[0];
     }
-    setTimeout(arguments.callee, 10);
+    setTimeout(arguments.callee, 1);
 })();
 
 
