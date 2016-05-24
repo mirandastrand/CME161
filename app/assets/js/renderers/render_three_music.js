@@ -19,10 +19,10 @@ function successCallback(stream) {
     console.log(left);
     console.log(right);*/
 
-    audioContext = new webkitAudioContext();
-    analyser = audioContext.createAnalyser();
-    microphone = audioContext.createMediaStreamSource(stream);
-    javascriptNode = audioContext.createJavaScriptNode(2048, 1, 1);
+    var audioContext = new AudioContext();
+    var analyser = audioContext.createAnalyser();
+    var microphone = audioContext.createMediaStreamSource(stream);
+    var javascriptNode = audioContext.createJavaScriptNode(2048, 1, 1);
 
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 1024;
