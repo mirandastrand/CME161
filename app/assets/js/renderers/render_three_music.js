@@ -85,7 +85,7 @@ bounding_box.update(); // render
 document.body.appendChild(renderer.domElement);
 
 var BlobMesh = function() {
-  this.mesh_detail = 200;
+  this.mesh_detail = 50;
   this.noise_detail = 10;
   this.position = new THREE.Vector3();
   this.radius = 200;
@@ -120,21 +120,23 @@ var BlobMesh = function() {
 
   this.updateSphere = function() {
     var speed = .075;
-    //var perlin = new ImprovedNoise();
     var quality = 7;
     this.seed += Math.random() * speed;
     var vertices = this.geometry.vertices;
 
     var i = 0;
-    for ( var y = 0; y <= this.geometry.parameters.heightSegments; y ++ ) {
-     for ( var x = 0; x <= this.geometry.parameters.widthSegments; x ++ ) {
+    for (var y = 0; y <= this.geometry.parameters.heightSegments; y ++) {
+     for (var x = 0; x <= this.geometry.parameters.widthSegments; x ++) {
+      //console.log("values: ");
+      //console.log(x);
+      //console.log(y);
       var u = x / this.geometry.parameters.widthSegments;
       var v = y / this.geometry.parameters.heightSegments;
-            var a = x % this.geometry.parameters.radius;
-            var b = y % this.geometry.parameters.radius;
-            var noise = this.noise_detail * Math.random()
-            //var noise = this.noise_detail * perlin.noise(a / quality, b / quality, this.seed);
-            var norm = this.geometry.parameters.radius + noise * 6.5;
+      var a = x % this.geometry.parameters.radius;
+      var b = y % this.geometry.parameters.radius;
+      var noise = frequencyData[x * y % 255] / 255;
+      //var noise = this.noise_detail * Math.random()
+      var norm = this.geometry.parameters.radius + noise * 6.5;
     
       vertices[i].x = -norm * 
    Math.cos( this.geometry.parameters.phiStart + u * this.geometry.parameters.phiLength ) * 
@@ -152,9 +154,6 @@ var BlobMesh = function() {
 }
 
 var blob = new BlobMesh();
-blob.radius = 300;
-blob.mesh_detail = 100;
-blob.noise_detail = 20;
 blob.createSphere();
 blob.material.setValues({
     opacity: 1,
@@ -163,7 +162,7 @@ blob.material.setValues({
     shading: THREE.SmoothShading,
     //vertexColors: THREE.FaceColors,
     transparent: false,
-    opacity: 0.9,
+    opacity: 0.7,
     wrapAround: true
 });
 parent.add(blob.mesh);
