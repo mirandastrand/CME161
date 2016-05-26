@@ -156,7 +156,7 @@ parent.add(blob.mesh);
 scene.add(parent);
 
 // Lights
-var ambientLight = new THREE.AmbientLight(0x000000);
+/*var ambientLight = new THREE.AmbientLight(0x000000);
 scene.add(ambientLight);
 
 var directionalLight = new THREE.DirectionalLight(0x0000ff);
@@ -181,9 +181,9 @@ scene.add(directionalLight2);
 
 var directionalLight6 = new THREE.DirectionalLight(0x0066ff);
 directionalLight2.position.set(-10, 10, 10).normalize();
-scene.add(directionalLight2);
+scene.add(directionalLight2);*/
 
-/*var dist_until_0 = 1000;
+var dist_until_0 = 1000;
 var lights = [];
 lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
 lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
@@ -200,7 +200,7 @@ lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
 scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
-scene.add(lights[3]);*/
+scene.add(lights[3]);
 
 // draw loop
 function draw() {
