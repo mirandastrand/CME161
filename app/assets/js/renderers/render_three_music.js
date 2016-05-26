@@ -173,15 +173,15 @@ scene.add(directionalLight3);
 
 var directionalLight4 = new THREE.DirectionalLight(0xff0066);
 directionalLight4.position.set(10, -10, 10).normalize();
-scene.add(directionalLight4);
+//scene.add(directionalLight4);
 
 var directionalLight5 = new THREE.DirectionalLight(0x660066);
 directionalLight5.position.set(10, -10, -10).normalize();
-scene.add(directionalLight5);
+//scene.add(directionalLight5);
 
 var directionalLight6 = new THREE.DirectionalLight(0x0066ff);
 directionalLight6.position.set(-10, 10, 10).normalize();
-scene.add(directionalLight6);
+//scene.add(directionalLight6);
 
 // draw loop
 function draw() {
