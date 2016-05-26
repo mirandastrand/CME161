@@ -12,44 +12,44 @@ var frequencyData;
 try {
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   audioContext = new AudioContext();
-} catch(e) {
+} catch (e) {
   alert("Web Audio API is not supported in your browser");
 }
 
 // Set up getUserMedia
 try {
   navigator.getUserMedia = navigator.getUserMedia ||
-                           navigator.webkitGetUserMedia ||
-                           navigator.mozGetUserMedia ||
-                           navigator.msGetUserMedia;
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia;
   var hasMicrophoneInput = (navigator.getUserMedia || navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia || navigator.msGetUserMedia);
-} catch(e) {
+    navigator.mozGetUserMedia || navigator.msGetUserMedia);
+} catch (e) {
   alert("getUserMedia() is not supported in your browser");
 }
 
 var errorFunction = function(e) {
-  alert("Error in getUserMedia: " + e);
-};  
+  alert("Error in getUserMedia(): " + e);
+};
 
 // Connect the microphone to audio context, set up analyser and frequency array
-navigator.getUserMedia({audio: true}, function(stream) {
+navigator.getUserMedia({
+  audio: true
+}, function(stream) {
   var microphone = audioContext.createMediaStreamSource(stream);
   analyser = audioContext.createAnalyser();
   microphone.connect(analyser);
   frequencyData = new Uint8Array(analyser.frequencyBinCount);
 }, errorFunction);
 
-//document.getElementById("text").innerHTML = "test hey";
-
 // Log frequency array at time interval 
-(function(){
-    if (analyser != null) {
-      analyser.getByteFrequencyData(frequencyData);
-      //console.log(frequencyData);
-      //document.getElementById("text").innerHTML = frequencyData[0];
-    }
-    setTimeout(arguments.callee, 1);
+(function() {
+  if (analyser != null) {
+    analyser.getByteFrequencyData(frequencyData);
+    //console.log(frequencyData);
+    //document.getElementById("text").innerHTML = frequencyData[0];
+  }
+  setTimeout(arguments.callee, 1);
 })();
 
 
@@ -59,26 +59,29 @@ var SCENE_WIDTH = SCENE_HEIGHT = 500;
 
 // create a canvas and a renderer, then append to document
 var canvas = document.getElementById("music_viz");
-var renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true}); // use webgl renderer (GPU!)
+var renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+  antialias: true
+}); // use webgl renderer (GPU!)
 renderer.setSize(SCENE_WIDTH, SCENE_HEIGHT); // Resizes the output canvas to (width, height), and also sets the viewport to fit that size, starting in (0, 0).
 
 // scene - where we put our models
 var scene = new THREE.Scene();
 
 // camera - how we look at our scene
-var camera = new THREE.PerspectiveCamera( 45, SCENE_WIDTH / SCENE_HEIGHT, 1, 10000 );
-camera.position.set( SCENE_WIDTH, SCENE_HEIGHT/2, 2000 );
+var camera = new THREE.PerspectiveCamera(45, SCENE_WIDTH / SCENE_HEIGHT, 1, 10000);
+camera.position.set(SCENE_WIDTH, SCENE_HEIGHT / 2, 2000);
 
 // orbit controls - how we use our mouse to move the camera
-var controls = new THREE.OrbitControls( camera,  canvas);
-controls.addEventListener( 'change', render );
+//var controls = new THREE.OrbitControls( camera,  canvas);
+//controls.addEventListener( 'change', render );
 
 // parent object (like a sub-scene)
 var parent = new THREE.Object3D();
 
 
 var bounding_box = new THREE.BoundingBoxHelper(parent); // can also be tied to scene
-                                                        // but since our objects are in the parent we tie it here
+// but since our objects are in the parent we tie it here
 bounding_box.update(); // render
 //parent.add(bounding_box);
 
@@ -95,58 +98,52 @@ var BlobMesh = function() {
 
   this.createSphere = function() {
     this.geometry = new THREE.SphereGeometry(this.radius, this.mesh_detail, this.mesh_detail);
-    
+
     this.geometry.parameters.phiStart = 0;
     this.geometry.parameters.phiLength = Math.PI * 2;
     this.geometry.parameters.thetaStart = 0;
     this.geometry.parameters.thetaLength = Math.PI;
-
+    
     this.material = new THREE.MeshPhongMaterial({
-        color: 0x00ff00,
-        specular: 0x333333,
-        emissive: 0x111111,
-        shininess: 50,
-        shading: THREE.FlatShading,
-        side: THREE.DoubleSide,
-        wireframe: false,
-        wireframeLinewidth: .05
+      transparent: true,
+      opacity: 0.7,
+      color: 0xffffff,
+      specular: 0xffffff,
+      emissive: 0x111111,
+      shininess: 200,
+      shading: THREE.FlatShading,
+      /*THREE.SmoothShading,*/
+      side: THREE.DoubleSide,
+      wireframe: false,
+      wrapAround: true
     });
 
-    this.material.transparent = true;
-    this.material.opacity = .4;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.position.set(0, 0, 0);
   }
 
   this.updateSphere = function() {
-    var speed = .075;
-    var quality = 7;
-    this.seed += Math.random() * speed;
     var vertices = this.geometry.vertices;
-
     var i = 0;
-    for (var y = 0; y <= this.geometry.parameters.heightSegments; y ++) {
-     for (var x = 0; x <= this.geometry.parameters.widthSegments; x ++) {
-      //console.log("values: ");
-      //console.log(x);
-      //console.log(y);
-      var u = x / this.geometry.parameters.widthSegments;
-      var v = y / this.geometry.parameters.heightSegments;
-      var a = x % this.geometry.parameters.radius;
-      var b = y % this.geometry.parameters.radius;
-      var noise = frequencyData[x * y % 255];
-      //var noise = this.noise_detail * Math.random()
-      var norm = this.geometry.parameters.radius + noise;
-    
-      vertices[i].x = -norm * 
-   Math.cos( this.geometry.parameters.phiStart + u * this.geometry.parameters.phiLength ) * 
-   Math.sin( this.geometry.parameters.thetaStart + v * this.geometry.parameters.thetaLength );
-      vertices[i].y = norm * Math.cos( this.geometry.parameters.thetaStart + v * this.geometry.parameters.thetaLength );
-      vertices[i].z = norm * 
-   Math.sin( this.geometry.parameters.phiStart + u * this.geometry.parameters.phiLength ) * 
-   Math.sin( this.geometry.parameters.thetaStart + v * this.geometry.parameters.thetaLength );
-            i++;
-     }
+    for (var x = 0; x <= this.geometry.parameters.widthSegments; x++) {
+      for (var y = 0; y <= this.geometry.parameters.heightSegments; y++) {
+
+        // calculate the theta and phi angles
+        var xProp = x / this.geometry.parameters.widthSegments;
+        var yProp = y / this.geometry.parameters.heightSegments;
+        var theta = this.geometry.parameters.thetaStart + (yProp * this.geometry.parameters.thetaLength);
+        var phi = this.geometry.parameters.phiStart + (xProp * this.geometry.parameters.phiLength);
+
+        // update radius based on the current frequency at the array position chosen for this vertex
+        var displacement = frequencyData[x * y % 255];
+        var newRadius = this.geometry.parameters.radius + displacement;
+        
+        // convert back to xyz coordinates and update point
+        vertices[i].x = newRadius * Math.sin(theta) * Math.cos(phi);
+        vertices[i].y = newRadius * Math.sin(theta) * Math.sin(phi);
+        vertices[i].z = newRadius * Math.cos(theta);
+        i++;
+      }
     }
 
     this.mesh.geometry.verticesNeedUpdate = true;
@@ -155,19 +152,8 @@ var BlobMesh = function() {
 
 var blob = new BlobMesh();
 blob.createSphere();
-blob.material.setValues({
-    opacity: 1,
-    color: "#ffffff",
-    wireframe: false,
-    shading: THREE.SmoothShading,
-    //vertexColors: THREE.FaceColors,
-    transparent: false,
-    opacity: 0.7,
-    wrapAround: true
-});
 parent.add(blob.mesh);
 scene.add(parent);
-
 
 // Lights
 var ambientLight = new THREE.AmbientLight(0x000000);
@@ -193,14 +179,12 @@ scene.add(lights[2]);
 function draw() {
   requestAnimationFrame(draw);
   blob.updateSphere();
-  //updateMesh();
-  renderer.render(scene, camera);
+  render();
 }
 
 function render() {
-  renderer.render( scene, camera );
+  renderer.render(scene, camera);
 }
 
 // start animation
 requestAnimationFrame(draw);
-
