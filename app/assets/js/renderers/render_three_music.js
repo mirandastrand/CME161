@@ -156,7 +156,7 @@ parent.add(blob.mesh);
 scene.add(parent);
 
 // Lights
-/*var ambientLight = new THREE.AmbientLight(0x000000);
+var ambientLight = new THREE.AmbientLight(0x000000);
 scene.add(ambientLight);
 
 var directionalLight = new THREE.DirectionalLight(0x0000ff);
@@ -168,39 +168,20 @@ directionalLight2.position.set(-10, -10, -10).normalize();
 scene.add(directionalLight2);
 
 var directionalLight3 = new THREE.DirectionalLight(0x6600cc);
-directionalLight2.position.set(-10, 10, -10).normalize();
-scene.add(directionalLight2);
+directionalLight3.position.set(-10, 10, -10).normalize();
+scene.add(directionalLight3);
 
 var directionalLight4 = new THREE.DirectionalLight(0xff0066);
-directionalLight2.position.set(10, -10, 10).normalize();
-scene.add(directionalLight2);
+directionalLight4.position.set(10, -10, 10).normalize();
+scene.add(directionalLight4);
 
 var directionalLight5 = new THREE.DirectionalLight(0x660066);
-directionalLight2.position.set(10, -10, -10).normalize();
-scene.add(directionalLight2);
+directionalLight5.position.set(10, -10, -10).normalize();
+scene.add(directionalLight5);
 
 var directionalLight6 = new THREE.DirectionalLight(0x0066ff);
-directionalLight2.position.set(-10, 10, 10).normalize();
-scene.add(directionalLight2);*/
-
-var dist_until_0 = 1000;
-var lights = [];
-lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
-lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
-lights[2] = new THREE.PointLight(0x6600cc, 1, dist_until_0);
-lights[3] = new THREE.PointLight(0xff0066, 1, dist_until_0);
-
-//x,z,y
-// -SCENE_WIDTH => z=0 since we moved the scene by -2*SCENE_WIDTH
-lights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-lights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-lights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
-lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
-
-scene.add(lights[0]);
-scene.add(lights[1]);
-scene.add(lights[2]);
-scene.add(lights[3]);
+directionalLight6.position.set(-10, 10, 10).normalize();
+scene.add(directionalLight6);
 
 // draw loop
 function draw() {
