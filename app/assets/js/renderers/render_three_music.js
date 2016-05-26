@@ -73,8 +73,8 @@ var camera = new THREE.PerspectiveCamera(45, SCENE_WIDTH / SCENE_HEIGHT, 1, 1000
 camera.position.set(SCENE_WIDTH, SCENE_HEIGHT / 2, 2000);
 
 // orbit controls - how we use our mouse to move the camera
-//var controls = new THREE.OrbitControls( camera,  canvas);
-//controls.addEventListener( 'change', render );
+var controls = new THREE.OrbitControls( camera,  canvas);
+controls.addEventListener( 'change', render );
 
 // parent object (like a sub-scene)
 var parent = new THREE.Object3D();
