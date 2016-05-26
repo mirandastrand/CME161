@@ -169,7 +169,7 @@ scene.add(directionalLight2);
 
 var directionalLight3 = new THREE.DirectionalLight(0x6600cc);
 directionalLight3.position.set(-10, 10, -10).normalize();
-scene.add(directionalLight3);
+//scene.add(directionalLight3);
 
 var directionalLight4 = new THREE.DirectionalLight(0xff0066);
 directionalLight4.position.set(10, -10, 10).normalize();
