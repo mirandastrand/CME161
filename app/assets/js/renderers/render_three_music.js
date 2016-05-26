@@ -90,15 +90,14 @@ document.body.appendChild(renderer.domElement);
 var BlobMesh = function() {
   this.mesh_detail = 50;
   this.noise_detail = 10;
-  this.position = new THREE.Vector3();
+  //this.position = new THREE.Vector3();
   this.radius = 200;
-  this.velocity = new THREE.Vector3();
+  //this.velocity = new THREE.Vector3();
   this.z = 0;
-  this.hue = Math.random();
 
   this.createSphere = function() {
     this.geometry = new THREE.SphereGeometry(this.radius, this.mesh_detail, this.mesh_detail);
-
+    
     this.geometry.parameters.phiStart = 0;
     this.geometry.parameters.phiLength = Math.PI * 2;
     this.geometry.parameters.thetaStart = 0;
@@ -110,6 +109,7 @@ var BlobMesh = function() {
       color: 0xffffff,
       specular: 0xffffff,
       emissive: 0x111111,
+      emissiveIntensity: 3,
       shininess: 200,
       shading: THREE.FlatShading,
       /*THREE.SmoothShading,*/
@@ -127,7 +127,7 @@ var BlobMesh = function() {
     var i = 0;
     for (var x = 0; x <= this.geometry.parameters.widthSegments; x++) {
       for (var y = 0; y <= this.geometry.parameters.heightSegments; y++) {
-
+      
         // calculate the theta and phi angles
         var xProp = x / this.geometry.parameters.widthSegments;
         var yProp = y / this.geometry.parameters.heightSegments;
@@ -161,19 +161,22 @@ scene.add(ambientLight);
 
 var dist_until_0 = 1000;
 var lights = [];
-lights[0] = new THREE.PointLight(0xff0040, 1, 2 * dist_until_0);
-lights[1] = new THREE.PointLight(0x0040ff, 1, 2 * dist_until_0);
-lights[2] = new THREE.PointLight(0x80ff80, 1, dist_until_0);
+lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
+lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
+lights[2] = new THREE.PointLight(0x6600cc, 1, dist_until_0);
+lights[3] = new THREE.PointLight(0xff0066, 1, dist_until_0);
 
 //x,z,y
 // -SCENE_WIDTH => z=0 since we moved the scene by -2*SCENE_WIDTH
 lights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
 lights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
 lights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
+lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
 
 scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
+scene.add(lights[3]);
 
 // draw loop
 function draw() {
