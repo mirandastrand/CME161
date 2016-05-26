@@ -159,7 +159,23 @@ scene.add(parent);
 var ambientLight = new THREE.AmbientLight(0x000000);
 scene.add(ambientLight);
 
-var dist_until_0 = 1000;
+var directionalLight = new THREE.DirectionalLight(0x0000ff);
+directionalLight.position.set(10, 10, 10).normalize();
+scene.add(directionalLight);
+
+var directionalLight2 = new THREE.DirectionalLight(0xff0000);
+directionalLight2.position.set(-10, -10, -10).normalize();
+scene.add(directionalLight2);
+
+var directionalLight3 = new THREE.DirectionalLight(0x6600cc);
+directionalLight2.position.set(-10, 10, -10).normalize();
+scene.add(directionalLight2);
+
+var directionalLight3 = new THREE.DirectionalLight(0xff0066);
+directionalLight2.position.set(10, -10, 10).normalize();
+scene.add(directionalLight2);
+
+/*var dist_until_0 = 1000;
 var lights = [];
 lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
 lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
@@ -176,7 +192,7 @@ lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
 scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
-scene.add(lights[3]);
+scene.add(lights[3]);*/
 
 // draw loop
 function draw() {
