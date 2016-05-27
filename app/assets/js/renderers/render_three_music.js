@@ -159,21 +159,24 @@ scene.add(parent);
 var ambientLight = new THREE.AmbientLight(0x000000);
 scene.add(ambientLight);
 
-var pointLights = [];
-pointLights[0] = new THREE.PointLight(0x0000ff, 1, 2000);
-pointLights[1] = new THREE.PointLight(0xff0000, 1, 2000);
-pointLights[2] = new THREE.PointLight(0xff0066, 1, 2000);
-pointLights[3] = new THREE.PointLight(0x6600ff, 1, 2000);
+var dist_until_0 = 1000;
+var lights = [];
+lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
+lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
+lights[2] = new THREE.PointLight(0x6600cc, 1, dist_until_0);
+lights[3] = new THREE.PointLight(0xff0066, 1, dist_until_0);
 
-pointLights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-pointLights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-pointLights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
-pointLights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
+//x,z,y
+// -SCENE_WIDTH => z=0 since we moved the scene by -2*SCENE_WIDTH
+lights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
+lights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
+lights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
+lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
 
-scene.add(pointLights[0]);
-scene.add(pointLights[1]);
-scene.add(pointLights[2]);
-scene.add(pointLights[3]);
+scene.add(lights[0]);
+scene.add(lights[1]);
+scene.add(lights[2]);
+scene.add(lights[3]);
 
 // draw loop
 function draw() {
