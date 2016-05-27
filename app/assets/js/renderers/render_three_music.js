@@ -170,10 +170,10 @@ pointLights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
 pointLights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
 pointLights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
 
-scene.add(lights[0]);
-scene.add(lights[1]);
-scene.add(lights[2]);
-scene.add(lights[3]);
+scene.add(pointLights[0]);
+scene.add(pointLights[1]);
+scene.add(pointLights[2]);
+scene.add(pointLights[3]);
 
 // draw loop
 function draw() {
