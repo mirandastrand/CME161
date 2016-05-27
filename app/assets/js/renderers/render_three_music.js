@@ -91,7 +91,7 @@ document.body.appendChild(renderer.domElement);
 var BlobMesh = function() {
   this.mesh_detail = 50;
   this.noise_detail = 10;
-  this.radius = SCENE_HEIGHT / 2;
+  this.radius = 0.6 * SCENE_HEIGHT;
   this.z = 0;
 
   this.createSphere = function() {
@@ -163,7 +163,7 @@ var dist_until_0 = 2 * SCENE_WIDTH;
 var lights = [];
 lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
 lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
-lights[2] = new THREE.PointLight(0x6600cc, 1, dist_until_0);
+lights[2] = new THREE.PointLight(0x0099ff, 1, dist_until_0);
 lights[3] = new THREE.PointLight(0xff0066, 1, 2 * dist_until_0);
 lights[4] = new THREE.PointLight(0x6600ff, 1, dist_until_0);
 
