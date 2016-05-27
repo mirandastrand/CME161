@@ -91,9 +91,7 @@ document.body.appendChild(renderer.domElement);
 var BlobMesh = function() {
   this.mesh_detail = 50;
   this.noise_detail = 10;
-  //this.position = new THREE.Vector3();
-  this.radius = 300;
-  //this.velocity = new THREE.Vector3();
+  this.radius = SCENE_HEIGHT / 2;
   this.z = 0;
 
   this.createSphere = function() {
