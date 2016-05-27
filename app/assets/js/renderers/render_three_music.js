@@ -160,7 +160,8 @@ scene.add(parent);
 var ambientLight = new THREE.AmbientLight(0x000000);
 scene.add(ambientLight);
 
-var dist_until_0 = SCENE_WIDTH;
+var dist_until_0 = 2 * SCENE_WIDTH;
+
 var lights = [];
 lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
 lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
