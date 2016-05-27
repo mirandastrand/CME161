@@ -134,7 +134,7 @@ var BlobMesh = function() {
         var phi = this.geometry.parameters.phiStart + (xProp * this.geometry.parameters.phiLength);
 
         // update radius based on the current frequency at the array position chosen for this vertex
-        var displacement = frequencyData[x * y % 255];
+        var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / 255);
         var newRadius = this.geometry.parameters.radius + displacement;
         
         // convert back to xyz coordinates and update point
