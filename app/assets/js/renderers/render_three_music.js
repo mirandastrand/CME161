@@ -91,7 +91,7 @@ document.body.appendChild(renderer.domElement);
 var BlobMesh = function() {
   this.mesh_detail = 50;
   this.noise_detail = 10;
-  this.radius = 0.6 * SCENE_HEIGHT;
+  this.radius = 0.5 * SCENE_HEIGHT;
   this.z = 0;
 
   this.createSphere = function() {
