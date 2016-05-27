@@ -92,7 +92,7 @@ var BlobMesh = function() {
   this.mesh_detail = 50;
   this.noise_detail = 10;
   //this.position = new THREE.Vector3();
-  this.radius = 200;
+  this.radius = 300;
   //this.velocity = new THREE.Vector3();
   this.z = 0;
 
@@ -166,7 +166,7 @@ var lights = [];
 lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
 lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
 lights[2] = new THREE.PointLight(0x6600cc, 1, dist_until_0);
-lights[3] = new THREE.PointLight(0xff0066, 1, dist_until_0);
+lights[3] = new THREE.PointLight(0xff0066, 1, 2 * dist_until_0);
 lights[4] = new THREE.PointLight(0x6600ff, 1, dist_until_0);
 
 //x,z,y
