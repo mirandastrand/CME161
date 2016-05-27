@@ -162,8 +162,8 @@ scene.add(ambientLight);
 var pointLights = [];
 pointLights[0] = new THREE.PointLight(0x0000ff, 1, 2000);
 pointLights[1] = new THREE.PointLight(0xff0000, 1, 2000);
-pointLights[2] = new THREE.PointLight(0x6600cc, 1, 2000);
-pointLights[3] = new THREE.PointLight(0xff0066, 1, 2000);
+pointLights[2] = new THREE.PointLight(0xff0066, 1, 2000);
+pointLights[3] = new THREE.PointLight(0x6600ff, 1, 2000);
 
 pointLights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
 pointLights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
