@@ -55,7 +55,8 @@ navigator.getUserMedia({
 
 // -----------------------   Three.js Visualizer   -----------------------
 
-var SCENE_WIDTH = SCENE_HEIGHT = 500;
+var SCENE_WIDTH = window.innerWidth;
+var SCENE_HEIGHT = window.innerHeight;
 
 // create a canvas and a renderer, then append to document
 var canvas = document.getElementById("music_viz");
