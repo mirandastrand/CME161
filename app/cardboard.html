@@ -41,15 +41,16 @@
     //audio.play()
 
     // Set up the Audio Context
-    try {
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioContext = new AudioContext();
-    } catch (e) {
-      alert("Web Audio API is not supported in your browser");
-    }
 
     //load and decode mp3 file 
     function loadFile() { 
+        try {
+          window.AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioContext = new AudioContext();
+        } catch (e) {
+          alert("Web Audio API is not supported in your browser");
+        }
+
         var req = new XMLHttpRequest(); 
         req.open("GET","assets/cardboard/Chicago.m4a",true); 
         req.responseType = "arraybuffer"; 
@@ -98,69 +99,8 @@
     }, false);
 
 
+    // THREE JS
 
-    //var audioElement = document.getElementById("player");
-
-    // Create the analyser
-    //var analyser = audioContext.createAnalyser();
-    //analyser.fftSize = 64;
-    //var frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-  
-    /*audioElement.addEventListener("canplay", function() {
-      var source = audioContext.createMediaElementSource(audioElement);
-
-      // Connect the output of the source to the input of the analyser
-      source.connect(analyser);
-
-      // Connect the output of the analyser to the destination
-      analyser.connect(audioContext.destination);
-    });
-
-*/
-
-    // Set up getUserMedia
-    /*try {
-      navigator.getUserMedia = navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia;
-      var hasMicrophoneInput = (navigator.getUserMedia || navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    } catch (e) {
-      alert("getUserMedia() is not supported in your browser");
-    }*/
-
-    /*var errorFunction = function(e) {
-      alert("Error in getUserMedia(): " + e);
-    };*/
-
-    // Connect the microphone to audio context, set up analyser and frequency array
-    /*navigator.getUserMedia({
-      audio: true
-    }, function(stream) {
-      var microphone = audioContext.createMediaStreamSource(stream);
-      analyser = audioContext.createAnalyser();
-      microphone.connect(analyser);
-      frequencyData = new Uint8Array(analyser.frequencyBinCount);
-    }, errorFunction);*/
-/*
-    var songAudio = audioContext.createMediaElementSource(audio);
-    analyser = audioContext.createAnalyser();
-    songAudio.connect(analyser);
-    frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-    // Log frequency array at time interval 
-    (function() {
-      if (analyser != null) {
-        analyser.getByteFrequencyData(frequencyData);
-        //console.log(frequencyData);
-        //document.getElementById("text").innerHTML = frequencyData[0];
-      }
-      setTimeout(arguments.callee, 1);
-    })();
-
-*/
     var camera, scene, renderer;
     var effect, controls;
     var element, container;
