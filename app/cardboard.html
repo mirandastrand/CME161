@@ -21,13 +21,130 @@
   </head>
   <body>
     <div id="example"></div>
+    <!-- <audio id="player" src="assets/cardboard/Chicago.m4a"></audio> -->
 
+  <!-- <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script> -->
   <script src="assets/cardboard/js/third-party/threejs/three.js"></script>
   <script src="assets/cardboard/js/third-party/threejs/StereoEffect.js"></script>
   <script src="assets/cardboard/js/third-party/threejs/DeviceOrientationControls.js"></script>
   <script src="assets/cardboard/js/third-party/threejs/OrbitControls.js"></script>
 
   <script>
+    // -----------------------   Audio Capture   -----------------------
+
+    var audioContext;
+    var audioBuffer;
+    var analyser;
+    var frequencyData;
+
+    //var audio = new Audio('assets/cardboard/Chicago.m4a');
+    //audio.play()
+
+    // Set up the Audio Context
+    try {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioContext = new AudioContext();
+    } catch (e) {
+      alert("Web Audio API is not supported in your browser");
+    }
+
+    //load and decode mp3 file 
+    function loadFile() { 
+        var req = new XMLHttpRequest(); 
+        req.open("GET","assets/cardboard/Chicago.m4a",true); 
+        req.responseType = "arraybuffer"; 
+        req.onload = function() { 
+            //decode the loaded data 
+            audioContext.decodeAudioData(req.response, function(buffer) { 
+                audioBuffer = buffer; 
+                play(); 
+            }); 
+        }; 
+        req.send(); 
+    } 
+
+    // stack overflow  http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+
+    //play the loaded file 
+    function play() { 
+        //create a source node from the buffer 
+        var src = audioContext.createBufferSource();  
+        src.buffer = audioBuffer; 
+        //connect to the final output node (the speakers) 
+        src.connect(audioContext.destination); 
+        //play immediately 
+        if (isSafari) {
+          src.noteOn(0);
+        } else {
+          src.start(0);
+        }
+    } 
+
+    loadFile();
+
+    //var audioElement = document.getElementById("player");
+
+    // Create the analyser
+    //var analyser = audioContext.createAnalyser();
+    //analyser.fftSize = 64;
+    //var frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+  
+    /*audioElement.addEventListener("canplay", function() {
+      var source = audioContext.createMediaElementSource(audioElement);
+
+      // Connect the output of the source to the input of the analyser
+      source.connect(analyser);
+
+      // Connect the output of the analyser to the destination
+      analyser.connect(audioContext.destination);
+    });
+
+*/
+
+    // Set up getUserMedia
+    /*try {
+      navigator.getUserMedia = navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
+      var hasMicrophoneInput = (navigator.getUserMedia || navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    } catch (e) {
+      alert("getUserMedia() is not supported in your browser");
+    }*/
+
+    /*var errorFunction = function(e) {
+      alert("Error in getUserMedia(): " + e);
+    };*/
+
+    // Connect the microphone to audio context, set up analyser and frequency array
+    /*navigator.getUserMedia({
+      audio: true
+    }, function(stream) {
+      var microphone = audioContext.createMediaStreamSource(stream);
+      analyser = audioContext.createAnalyser();
+      microphone.connect(analyser);
+      frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    }, errorFunction);*/
+/*
+    var songAudio = audioContext.createMediaElementSource(audio);
+    analyser = audioContext.createAnalyser();
+    songAudio.connect(analyser);
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+    // Log frequency array at time interval 
+    (function() {
+      if (analyser != null) {
+        analyser.getByteFrequencyData(frequencyData);
+        //console.log(frequencyData);
+        //document.getElementById("text").innerHTML = frequencyData[0];
+      }
+      setTimeout(arguments.callee, 1);
+    })();
+
+*/
     var camera, scene, renderer;
     var effect, controls;
     var element, container;
