@@ -29,6 +29,10 @@
   <script src="assets/cardboard/js/third-party/threejs/DeviceOrientationControls.js"></script>
   <script src="assets/cardboard/js/third-party/threejs/OrbitControls.js"></script>
 
+  <!--<script src="assets/cardboard/js/third-party/threejs/TrackballControls.js"></script>
+  <script src="assets/cardboard/js/third-party/threejs/dat.gui.min.js"></script>
+  <script src="assets/cardboard/js/third-party/threejs/GPUParticleSystem.js" charset="utf-8"></script> -->
+
   <script>
     // -----------------------   Audio Capture   -----------------------
 
@@ -36,11 +40,13 @@
     var audioBuffer;
     var analyser;
     var frequencyData;
+    var setup = false;
+
 
     //var audio = new Audio('assets/cardboard/Chicago.m4a');
     //audio.play()
 
-    // Set up the Audio Context
+    // Set up the Audio Context - http://joshondesign.com/p/books/canvasdeepdive/chapter12.html
 
     //load and decode mp3 file 
     function loadFile() { 
@@ -72,6 +78,19 @@
         //create a source node from the buffer 
         var src = audioContext.createBufferSource();  
         src.buffer = audioBuffer; 
+
+        //create fft 
+        analyser = audioContext.createAnalyser(); 
+        src.connect(analyser);
+        analyser.connect(audioContext.destination);  
+     
+        //connect them up into a chain 
+        src.connect(analyser); 
+        analyser.connect(audioContext.destination); 
+
+        frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+
         //connect to the final output node (the speakers) 
         src.connect(audioContext.destination); 
         //play immediately 
@@ -80,10 +99,12 @@
         } else {
           src.start(0);
         }
+
+        setup = true;
     } 
 
     // unlock web audio - https://paulbakaus.com/tutorials/html5/web-audio-on-ios/
-    window.addEventListener('touchend', function() {
+    /*window.addEventListener('touchend', function() {
 
         // create empty buffer
         var buffer = myContext.createBuffer(1, 1, 22050);
@@ -96,14 +117,29 @@
         // play the file
         source.noteOn(0);
         loadFile();
-    }, false);
+    }, false);*/
+
+    // FUCK IOS
+    loadFile();
+
+    (function() {
+  if (analyser != null) {
+    analyser.getByteFrequencyData(frequencyData);
+    //console.log(frequencyData);
+    //document.getElementById("text").innerHTML = frequencyData[0];
+  }
+  setTimeout(arguments.callee, 1);
+})();
 
 
     // THREE JS
+    var SCENE_WIDTH = window.innerWidth;
+    var SCENE_HEIGHT = window.innerHeight;
 
     var camera, scene, renderer;
     var effect, controls;
     var element, container;
+    var blob;
 
     var clock = new THREE.Clock();
 
@@ -184,7 +220,7 @@
         this.mesh_detail = 50;
         this.noise_detail = 10;
         this.radius = 200;
-        this.z = 0;
+        this.z = -300;
 
         this.createSphere = function() {
           this.geometry = new THREE.SphereGeometry(this.radius, this.mesh_detail, this.mesh_detail);
@@ -209,7 +245,7 @@
           });
 
           this.mesh = new THREE.Mesh(this.geometry, this.material);
-          this.mesh.position.set(0, 0, 0);
+          this.mesh.position.set(0, 0, -300);
         }
 
         this.updateSphere = function() {
@@ -225,14 +261,18 @@
               var phi = this.geometry.parameters.phiStart + (xProp * this.geometry.parameters.phiLength);
 
               // update radius based on the current frequency at the array position chosen for this vertex
-              //var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.5 * 255));
-              var displacement = Math.random() * 255;
+              var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.5 * 255));
+
+              //var data = new Uint8Array(samples); 
+              //analyser.getByteFrequencyData(data); 
+              //var displacement = data[x * y % 255];
+              //var displacement = Math.random() * 255;
               var newRadius = this.geometry.parameters.radius + displacement;
               
               // convert back to xyz coordinates and update point
               vertices[i].x = newRadius * Math.sin(theta) * Math.cos(phi);
               vertices[i].y = newRadius * Math.sin(theta) * Math.sin(phi);
-              vertices[i].z = newRadius * Math.cos(theta);
+              vertices[i].z = newRadius * Math.cos(theta) - 300;
               i++;
             }
           }
@@ -241,12 +281,11 @@
         }
       }
 
-      var blob = new BlobMesh();
+      blob = new BlobMesh();
       blob.createSphere();
       //parent.add(blob.mesh);
       scene.add(blob.mesh);
 
-      var SCENE_WIDTH = window.innerWidth;
       var dist_until_0 = 2 * SCENE_WIDTH;
 
       var lights = [];
@@ -270,6 +309,7 @@
       scene.add(lights[3]);
       scene.add(lights[4]);
 
+
       window.addEventListener('resize', resize, false);
       setTimeout(resize, 1);
     }
@@ -287,9 +327,8 @@
 
     function update(dt) {
       resize();
-
+      blob.updateSphere();
       camera.updateProjectionMatrix();
-
       controls.update(dt);
     }
 
@@ -299,7 +338,6 @@
 
     function animate(t) {
       requestAnimationFrame(animate);
-
       update(clock.getDelta());
       render(clock.getDelta());
     }

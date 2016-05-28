@@ -15,10 +15,6 @@ def project():
 def cardboard():
     return app.make_response(open('app/cardboard.html').read())
 
-@app.route("/audio")
-def audio():
-    return app.make_response(open('app/audiotest.html').read())
-
 # send assets (ex. assets/js/random_triangle_meshes/random_triangle_meshes.js)
 # blocks other requests, so your directories won't get listed (ex. assets/js will return "not found")
 @app.route('/assets/<path:path>')
