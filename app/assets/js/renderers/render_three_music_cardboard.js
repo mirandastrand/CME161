@@ -73,12 +73,37 @@ renderer.setSize(SCENE_WIDTH, SCENE_HEIGHT); // Resizes the output canvas to (wi
 var scene = new THREE.Scene();
 
 // camera - how we look at our scene
-var camera = new THREE.PerspectiveCamera(45, SCENE_WIDTH / SCENE_HEIGHT, 1, 10000);
-camera.position.set(SCENE_WIDTH, SCENE_HEIGHT / 2, 2000);
+//var camera = new THREE.PerspectiveCamera(45, SCENE_WIDTH / SCENE_HEIGHT, 1, 10000);
+//camera.position.set(SCENE_WIDTH, SCENE_HEIGHT / 2, 2000);
+
+var camera = new THREE.PerspectiveCamera(90, 1, 0.001, 4000);
+camera.position.set(0, 0, 0);
+scene.add(camera);
+
+// Stereo Effect
+var effect = new THREE.StereoEffect(renderer);
 
 // orbit controls - how we use our mouse to move the camera
-var controls = new THREE.OrbitControls( camera,  canvas);
-controls.addEventListener( 'change', render );
+//var controls = new THREE.OrbitControls( camera,  canvas);
+//controls.addEventListener( 'change', render );
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.set(
+  camera.position.x + 0.15,
+  camera.position.y,
+  camera.position.z
+  );
+controls.noPan = true;
+controls.noZoom = true;
+
+function setOrientationControls(e) {
+  if (!e.alpha) { return; }
+  controls = new THREE.DeviceOrientationControls(camera, true);
+  controls.connect();
+  controls.update();
+  renderer.domElement.addEventListener('click', full_screen, false);
+  window.removeEventListener('deviceorientation', setOrientationControls, true);
+}
+window.addEventListener('deviceorientation', setOrientationControls, true);
 
 // parent object (like a sub-scene)
 var parent = new THREE.Object3D();
@@ -138,7 +163,8 @@ var BlobMesh = function() {
 
         // update radius based on the current frequency at the array position chosen for this vertex
         //var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.5 * 255));
-        var displacement = Math.random() * 255;
+        //var displacement = Math.random() * 255;
+        var displacement = 0;
         var newRadius = this.geometry.parameters.radius + displacement;
         
         // convert back to xyz coordinates and update point

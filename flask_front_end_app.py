@@ -11,6 +11,10 @@ def index():
 def project():
     return app.make_response(open('app/project.html').read())
 
+@app.route("/cardboard")
+def project():
+    return app.make_response(open('app/cardboard/index.html').read())
+
 # send assets (ex. assets/js/random_triangle_meshes/random_triangle_meshes.js)
 # blocks other requests, so your directories won't get listed (ex. assets/js will return "not found")
 @app.route('/assets/<path:path>')
