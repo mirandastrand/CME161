@@ -12,7 +12,7 @@ def project():
     return app.make_response(open('app/project.html').read())
 
 @app.route("/cardboard")
-def project():
+def cardboard():
     return app.make_response(open('app/cardboard/index.html').read())
 
 # send assets (ex. assets/js/random_triangle_meshes/random_triangle_meshes.js)
