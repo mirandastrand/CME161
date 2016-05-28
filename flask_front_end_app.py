@@ -13,7 +13,7 @@ def project():
 
 @app.route("/cardboard")
 def cardboard():
-    return app.make_response(open('app/cardboard/index.html').read())
+    return app.make_response(open('app/cardboard.html').read())
 
 # send assets (ex. assets/js/random_triangle_meshes/random_triangle_meshes.js)
 # blocks other requests, so your directories won't get listed (ex. assets/js will return "not found")
