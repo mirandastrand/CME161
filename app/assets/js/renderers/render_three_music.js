@@ -1,8 +1,8 @@
+
+// ----------------------------------------------   Audio Capture   ----------------------------------------------
 // Citations for getting audio capture to work: 
 // http://papers.traustikristjansson.info/?p=486
 // https://www.patrick-wied.at/blog/how-to-create-audio-visualizations-with-javascript-html
-
-// -----------------------   Audio Capture   -----------------------
 
 var audioContext;
 var analyser;
@@ -42,40 +42,17 @@ navigator.getUserMedia({
   frequencyData = new Uint8Array(analyser.frequencyBinCount);
 }, errorFunction);
 
-// Log frequency array at time interval 
+// Log frequency array at regular time interval so the frequencyData array is always current
+// when the visualization accesses it
 (function() {
   if (analyser != null) {
     analyser.getByteFrequencyData(frequencyData);
-    //console.log(frequencyData);
-    //document.getElementById("text").innerHTML = frequencyData[0];
   }
   setTimeout(arguments.callee, 1);
 })();
 
 
-// -----------------------   Three.js Visualizer   -----------------------
-/*var texture = THREE.ImageUtils.loadTexture(
-        'assets/images/milkwaynasa.jpg'
-      );
-      texture.wrapS = THREE.ClampToEdgeWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      //texture.repeat = new THREE.Vector2(50, 50);
-      //texture.anisotropy = renderer.getMaxAnisotropy();
-
-var bg = new THREE.Mesh(
-  new THREE.PlaneBufferGeometry(2, 2, 0),
-  new THREE.MeshBasicMaterial({map: texture})
-);
-
-// The bg plane shouldn't care about the z-buffer.
-bg.material.depthTest = false;
-bg.material.depthWrite = false;
-
-var bgScene = new THREE.Scene();
-var bgCam = new THREE.Camera();
-bgScene.add(bgCam);
-bgScene.add(bg);*/
-
+// ----------------------------------------------   Three.js Visualizer   ----------------------------------------------
 
 var SCENE_WIDTH = window.innerWidth;
 var SCENE_HEIGHT = window.innerHeight;
@@ -112,6 +89,9 @@ bounding_box.update(); // render
 //parent.add(bounding_box);
 
 document.body.appendChild(renderer.domElement);
+
+// ------------------------------------------------------------------------------------------------
+// Define and add blob music visualizer
 
 var BlobMesh = function() {
   this.mesh_detail = 50;
@@ -153,18 +133,17 @@ var BlobMesh = function() {
     for (var x = 0; x <= this.geometry.parameters.widthSegments; x++) {
       for (var y = 0; y <= this.geometry.parameters.heightSegments; y++) {
       
-        // calculate the theta and phi angles
+        // Calculate the theta and phi angles
         var xProp = x / this.geometry.parameters.widthSegments;
         var yProp = y / this.geometry.parameters.heightSegments;
         var theta = this.geometry.parameters.thetaStart + (yProp * this.geometry.parameters.thetaLength);
         var phi = this.geometry.parameters.phiStart + (xProp * this.geometry.parameters.phiLength);
 
-        // update radius based on the current frequency at the array position chosen for this vertex
+        // Update radius based on the current frequency at the array position chosen for this vertex
         var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.5 * 255));
-        //var displacement = Math.random() * 255;
         var newRadius = this.geometry.parameters.radius + displacement;
         
-        // convert back to xyz coordinates and update point
+        // Convert back to xyz coordinates and update point
         vertices[i].x = newRadius * Math.sin(theta) * Math.cos(phi);
         vertices[i].y = newRadius * Math.sin(theta) * Math.sin(phi);
         vertices[i].z = newRadius * Math.cos(theta);
@@ -176,17 +155,19 @@ var BlobMesh = function() {
   }
 }
 
+// Create and add the blob visualizer
 var blob = new BlobMesh();
 blob.createSphere();
 parent.add(blob.mesh);
 scene.add(parent);
 
-// Lights
+// ------------------------------------------------------------------------------------------------
+// Add lights
+
 var ambientLight = new THREE.AmbientLight(0x000000);
 scene.add(ambientLight);
 
 var dist_until_0 = 2 * SCENE_WIDTH;
-
 var lights = [];
 lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
 lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
@@ -210,7 +191,7 @@ scene.add(lights[3]);
 
 
 // ------------------------------------------------------------------------------------------------
-// add controls and GUI
+// Add controls and GUI
 
 var controls = new function () {
     this.Light_1_Hue = 240.0 / 360.0;
@@ -259,13 +240,13 @@ Light_5_Hue.onChange(function (value) {
   lights[4].color = color;
 });*/
 
-// draw loop
+
+// ------------------------------------------------------------------------------------------------
+// Animate the scene
+
 function draw() {
   requestAnimationFrame(draw);
   blob.updateSphere();
-  //renderer.autoClear = false;
-  //renderer.clear();
-  //renderer.render(bgScene, bgCam);
   render();
 }
 

@@ -1,4 +1,5 @@
-<!-- Starter code from https://vr.chromeexperiments.com/ -->
+<!-- Adapted from cardboard starter code available at https://vr.chromeexperiments.com/ -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,7 +35,7 @@
   <script src="assets/cardboard/js/third-party/threejs/GPUParticleSystem.js" charset="utf-8"></script> -->
 
   <script>
-    // -----------------------   Audio Capture   -----------------------
+    // ----------------------------------------------   Audio   ----------------------------------------------
 
     var audioContext;
     var audioBuffer;
@@ -70,29 +71,22 @@
         req.send(); 
     } 
 
-    // stack overflow  http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+    // Quick browser check from stack overflow:
+    // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
     var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
 
     //play the loaded file 
     function play() { 
-        //create a source node from the buffer 
         var src = audioContext.createBufferSource();  
         src.buffer = audioBuffer; 
-
-        //create fft 
         analyser = audioContext.createAnalyser(); 
         src.connect(analyser);
         analyser.connect(audioContext.destination);  
-     
-        //connect them up into a chain 
         src.connect(analyser); 
         analyser.connect(audioContext.destination); 
-
         frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-
-        //connect to the final output node (the speakers) 
         src.connect(audioContext.destination); 
+
         //play immediately 
         if (isSafari) {
           src.noteOn(0);
@@ -132,7 +126,8 @@
 })();
 
 
-    // THREE JS
+// ----------------------------------------------   Three.js Visualizer   ----------------------------------------------
+
     var SCENE_WIDTH = window.innerWidth;
     var SCENE_HEIGHT = window.innerHeight;
 
@@ -145,6 +140,9 @@
 
     init();
     animate();
+
+  // ------------------------------------------------------------------------------------------------
+  // Begin init
 
     function init() {
       THREE.ImageUtils.crossOrigin = '';
@@ -191,7 +189,9 @@
       var light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
       scene.add(light);
 
+      // ------------------------------------------------------------------------------------------------
       // Create the floor
+
       var texture = THREE.ImageUtils.loadTexture(
         'assets/cardboard/textures/floor-wood.jpg'
       );
@@ -215,7 +215,9 @@
       scene.add(mesh); //remove floor
 
 
-      // Create the blob
+      // ------------------------------------------------------------------------------------------------
+      // Create the blob visualizer
+
       var BlobMesh = function() {
         this.mesh_detail = 50;
         this.noise_detail = 10;
@@ -286,6 +288,9 @@
       //parent.add(blob.mesh);
       scene.add(blob.mesh);
 
+      // ------------------------------------------------------------------------------------------------
+      // Create the lights
+
       var dist_until_0 = 2 * SCENE_WIDTH;
 
       var lights = [];
@@ -313,6 +318,10 @@
       window.addEventListener('resize', resize, false);
       setTimeout(resize, 1);
     }
+
+  // End init
+  // ------------------------------------------------------------------------------------------------
+
 
     function resize() {
       var width = container.offsetWidth;
