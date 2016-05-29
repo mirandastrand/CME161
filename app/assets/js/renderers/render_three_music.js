@@ -54,6 +54,28 @@ navigator.getUserMedia({
 
 
 // -----------------------   Three.js Visualizer   -----------------------
+/*var texture = THREE.ImageUtils.loadTexture(
+        'assets/images/milkwaynasa.jpg'
+      );
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      //texture.repeat = new THREE.Vector2(50, 50);
+      //texture.anisotropy = renderer.getMaxAnisotropy();
+
+var bg = new THREE.Mesh(
+  new THREE.PlaneBufferGeometry(2, 2, 0),
+  new THREE.MeshBasicMaterial({map: texture})
+);
+
+// The bg plane shouldn't care about the z-buffer.
+bg.material.depthTest = false;
+bg.material.depthWrite = false;
+
+var bgScene = new THREE.Scene();
+var bgCam = new THREE.Camera();
+bgScene.add(bgCam);
+bgScene.add(bg);*/
+
 
 var SCENE_WIDTH = window.innerWidth;
 var SCENE_HEIGHT = window.innerHeight;
@@ -200,6 +222,7 @@ var controls = new function () {
 
 var gui = new dat.GUI();
 document.getElementById('dat_gui_container').appendChild( gui.domElement );
+gui.close(); // start out the gui as closed
 
 Light_1_Hue = gui.add(controls, 'Light_1_Hue', 0, 1);
 Light_1_Hue.onChange(function (value) {
@@ -236,11 +259,13 @@ Light_5_Hue.onChange(function (value) {
   lights[4].color = color;
 });*/
 
-
 // draw loop
 function draw() {
   requestAnimationFrame(draw);
   blob.updateSphere();
+  //renderer.autoClear = false;
+  //renderer.clear();
+  //renderer.render(bgScene, bgCam);
   render();
 }
 
