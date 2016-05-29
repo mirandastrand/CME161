@@ -7,6 +7,8 @@
 var audioContext;
 var analyser;
 var frequencyData;
+var useSmoothingTimeConstant = true;
+var smoothingTimeConstant = 1;
 
 // Set up the Audio Context
 try {
@@ -47,6 +49,7 @@ navigator.getUserMedia({
 (function() {
   if (analyser != null) {
     analyser.getByteFrequencyData(frequencyData);
+    smoothingTimeConstant = analyser.smoothingTimeConstant
   }
   setTimeout(arguments.callee, 1);
 })();
@@ -140,7 +143,10 @@ var BlobMesh = function() {
         var phi = this.geometry.parameters.phiStart + (xProp * this.geometry.parameters.phiLength);
 
         // Update radius based on the current frequency at the array position chosen for this vertex
-        var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.5 * 255));
+        var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.3 * 255));
+        if (useSmoothingTimeConstant) {
+          displacement *= smoothingTimeConstant;
+        }
         var newRadius = this.geometry.parameters.radius + displacement;
         
         // Convert back to xyz coordinates and update point
@@ -199,6 +205,7 @@ var controls = new function () {
     this.Light_3_Hue = 204.0 / 360.0;
     this.Light_4_Hue = 336.0 / 360.0;
     this.Light_5_Hue = 264.0 / 360.0
+    this.Use_Smoothing = true;
 }
 
 var gui = new dat.GUI();
@@ -240,6 +247,10 @@ Light_5_Hue.onChange(function (value) {
   lights[4].color = color;
 });*/
 
+Use_Smoothing = gui.add(controls, 'Use_Smoothing');
+Use_Smoothing.onChange(function (value) {
+  useSmoothingTimeConstant = value;
+});
 
 // ------------------------------------------------------------------------------------------------
 // Animate the scene
