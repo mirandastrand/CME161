@@ -212,7 +212,7 @@
 
       var mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.x = -Math.PI / 2;
-      scene.add(mesh);
+      scene.add(mesh); //remove floor
 
 
       // Create the blob
@@ -220,7 +220,7 @@
         this.mesh_detail = 50;
         this.noise_detail = 10;
         this.radius = 200;
-        this.z = -300;
+        this.z = 0;
 
         this.createSphere = function() {
           this.geometry = new THREE.SphereGeometry(this.radius, this.mesh_detail, this.mesh_detail);
@@ -245,7 +245,7 @@
           });
 
           this.mesh = new THREE.Mesh(this.geometry, this.material);
-          this.mesh.position.set(0, 0, -300);
+          this.mesh.position.set(400, 0, 0);
         }
 
         this.updateSphere = function() {
@@ -270,9 +270,9 @@
               var newRadius = this.geometry.parameters.radius + displacement;
               
               // convert back to xyz coordinates and update point
-              vertices[i].x = newRadius * Math.sin(theta) * Math.cos(phi);
+              vertices[i].x = newRadius * Math.sin(theta) * Math.cos(phi) + 400;
               vertices[i].y = newRadius * Math.sin(theta) * Math.sin(phi);
-              vertices[i].z = newRadius * Math.cos(theta) - 300;
+              vertices[i].z = newRadius * Math.cos(theta);
               i++;
             }
           }
@@ -297,8 +297,8 @@
 
       //x,z,y
       // -SCENE_WIDTH => z=0 since we moved the scene by -2*SCENE_WIDTH
-      lights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-      lights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
+      lights[1].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
+      lights[0].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
       lights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
       lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
       lights[4].position.set(-SCENE_WIDTH, -SCENE_WIDTH, -2 * SCENE_WIDTH);

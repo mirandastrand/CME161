@@ -125,6 +125,7 @@ var BlobMesh = function() {
   }
 
   this.updateSphere = function() {
+    if (frequencyData == null) { return; }
     var vertices = this.geometry.vertices;
     var i = 0;
     for (var x = 0; x <= this.geometry.parameters.widthSegments; x++) {
@@ -181,9 +182,59 @@ lights[4].position.set(-SCENE_WIDTH, -SCENE_WIDTH, -2 * SCENE_WIDTH);
 
 scene.add(lights[0]);
 scene.add(lights[1]);
-scene.add(lights[2]);
+//scene.add(lights[2]);
 scene.add(lights[3]);
-scene.add(lights[4]);
+//scene.add(lights[4]);
+
+
+// ------------------------------------------------------------------------------------------------
+// add controls and GUI
+
+var controls = new function () {
+    this.Light_1_Hue = 240.0 / 360.0;
+    this.Light_2_Hue = 0.0;
+    this.Light_3_Hue = 204.0 / 360.0;
+    this.Light_4_Hue = 336.0 / 360.0;
+    this.Light_5_Hue = 264.0 / 360.0
+}
+
+var gui = new dat.GUI();
+document.getElementById('dat_gui_container').appendChild( gui.domElement );
+
+Light_1_Hue = gui.add(controls, 'Light_1_Hue', 0, 1);
+Light_1_Hue.onChange(function (value) {
+  var color = new THREE.Color();
+  color.setHSL(value, 1, 0.5);
+  lights[0].color = color;
+});
+
+Light_2_Hue = gui.add(controls, 'Light_2_Hue', 0, 1);
+Light_2_Hue.onChange(function (value) {
+  var color = new THREE.Color();
+  color.setHSL(value, 1, 0.5);
+  lights[1].color = color;
+});
+
+/*Light_3_Hue = gui.add(controls, 'Light_3_Hue', 0, 1);
+Light_3_Hue.onChange(function (value) {
+  var color = new THREE.Color();
+  color.setHSL(value, 1, 0.5);
+  lights[2].color = color;
+});*/
+
+Light_4_Hue = gui.add(controls, 'Light_4_Hue', 0, 1);
+Light_4_Hue.onChange(function (value) {
+  var color = new THREE.Color();
+  color.setHSL(value, 1, 0.5);
+  lights[3].color = color;
+});
+
+/*Light_5_Hue = gui.add(controls, 'Light_5_Hue', 0, 1);
+Light_5_Hue.onChange(function (value) {
+  var color = new THREE.Color();
+  color.setHSL(value, 1, 0.5);
+  lights[4].color = color;
+});*/
 
 
 // draw loop
