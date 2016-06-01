@@ -26,7 +26,7 @@ def get_trellis():
 	with open('app/assets/data/trellis.json') as data_file:
 		return json.dumps(json.load(data_file))
 
-@app.route('/trellis/limit/<path:n_entries>', methods=['GET'])
+@app.route('/trellis/limit/<n_entries>', methods=['GET'])
 def get_trellis_limit(n_entries):
 	with open('app/assets/data/trellis.json') as data_file:
 		return json.dumps(json.load(data_file)[:n_entries])
@@ -58,7 +58,7 @@ def get_graph():
 	with open('app/assets/data/trellis.json') as data_file:
 		return json.dumps(make_data_graph(json.load(data_file)))
 
-@app.route('/graph/limit/<path:n_entries>', methods=['GET'])
+@app.route('/graph/limit/<n_entries>', methods=['GET'])
 def get_graph_limit(n_entries):
 	with open('app/assets/data/trellis.json') as data_file:
 		return json.dumps(make_data_graph(json.load(data_file)[:n_entries]))
