@@ -98,7 +98,7 @@ document.body.appendChild(renderer.domElement);
 
 var BlobMesh = function() {
   this.mesh_detail = 50;
-  this.noise_detail = 10;
+  this.noise_detail = 11;
   this.radius = 0.5 * SCENE_HEIGHT;
   this.z = 0;
 
@@ -167,33 +167,111 @@ blob.createSphere();
 parent.add(blob.mesh);
 scene.add(parent);
 
+// ---------------------------------------------------------
+// Particle Render Prototype Methods
+
+//MusicParticle.prototype.set_hue  = function(){ this.hue = 0 }
+MusicParticle.prototype.setRadius = function(){ this.radius = Math.random() * 40; }
+MusicParticle.prototype.setRotation = function(){ 
+  this.rotation   = new THREE.Vector3();
+  this.rotation.x = this.rotation.y = this.rotation.z = 0;
+  this.rotation_v = new THREE.Vector3();
+  this.rotation_v.x = Math.random()/10;
+  this.rotation_v.y = Math.random()/10;
+  this.rotation_v.z = Math.random()/10;
+}
+
+MusicParticle.prototype.createGeometry = function(){
+  // http://threejs.org/docs/#Reference/Extras.Geometries/SphereGeometry
+  this.geometry = new THREE.SphereGeometry()
+  this.radius = 30;
+  this.mesh_detail = 50;
+  this.noise_detail = 11;
+}
+
+MusicParticle.prototype.createMaterial = function(){
+  this.color = new THREE.Color(0xfffff);
+  this.material = new THREE.MeshPhongMaterial({
+    color: this.color,
+    specular: 0xffffff,
+    intensity: 1000,
+    shininess: .9
+  });
+  this.material.transparent = false;
+  this.material.opacity = 1;
+}
+
+MusicParticle.prototype.createMesh = function(){
+  // http://threejs.org/docs/#Reference/Objects/Mesh
+  this.mesh = new THREE.Mesh(
+    this.geometry,
+    this.material
+  );
+  this.mesh.position.set(this.x, this.y, this.z);
+}
+
+MusicParticle.prototype.initMeshObj = function(){
+  this.createGeometry();
+  this.createMaterial();
+  this.createMesh();
+}
+
+MusicParticle.prototype.updateMesh = function(){
+  // update rotation ( rotation is a vector of type Euler http://threejs.org/docs/#Reference/Math/Euler )
+  this.mesh.position.set(this.position.x, this.position.y, this.position.z);
+  this.mesh.rotation.setFromVector3(new THREE.Vector3(this.rotation.x, this.rotation.y, this.rotation.z));
+}
+
+MusicParticle.prototype.updateVelocity = function() {
+  if (frequencyData != null) {
+      var average = 0;
+      for (var i = 0; i < frequencyData.length; i++) {
+        average += frequencyData[i];
+      }
+      average /= frequencyData.length;
+      average += 1;
+      this.velocity.x = average * this.baseVelocity.x;
+      this.velocity.y = average * this.baseVelocity.y;
+      this.velocity.z = average * this.baseVelocity.z;
+    }
+}
+
+var n = 50;
+var particles = [];
+for (var i = 0; i < n; i++){
+  var p = new MusicParticle();
+  p.setWorldSize(SCENE_WIDTH, SCENE_HEIGHT, SCENE_HEIGHT);
+  p.setRadius();
+  p.setRotation();
+  p.initMeshObj();
+  scene.add(p.mesh);
+  particles.push(p);
+}
+
 // ------------------------------------------------------------------------------------------------
 // Add lights
 
-var ambientLight = new THREE.AmbientLight(0x000000);
-scene.add(ambientLight);
+//var ambientLight = new THREE.AmbientLight(0x000000);
+//scene.add(ambientLight);
 
-var dist_until_0 = 2 * SCENE_WIDTH;
-var lights = [];
-lights[0] = new THREE.PointLight(0x0000ff, 1, 2 * dist_until_0);
-lights[1] = new THREE.PointLight(0xff0000, 1, 2 * dist_until_0);
-lights[2] = new THREE.PointLight(0x0099ff, 1, dist_until_0);
-lights[3] = new THREE.PointLight(0xff0066, 1, 2 * dist_until_0);
-lights[4] = new THREE.PointLight(0x6600ff, 1, dist_until_0);
+var pointLights = [];
+pointLights[0] = new THREE.PointLight(0x0000ff, 1, 4 * SCENE_WIDTH);
+pointLights[1] = new THREE.PointLight(0xff0000, 1, 4 * SCENE_WIDTH);
+pointLights[2] = new THREE.PointLight(0x0099ff, 1, 2 * SCENE_WIDTH);
+pointLights[3] = new THREE.PointLight(0xff0066, 1, 4 * SCENE_WIDTH);
+pointLights[4] = new THREE.PointLight(0x6600ff, 1, 2 * SCENE_WIDTH);
 
-//x,z,y
-// -SCENE_WIDTH => z=0 since we moved the scene by -2*SCENE_WIDTH
-lights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-lights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-lights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
-lights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
-lights[4].position.set(-SCENE_WIDTH, -SCENE_WIDTH, -2 * SCENE_WIDTH);
+pointLights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
+pointLights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
+pointLights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
+pointLights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
+pointLights[4].position.set(-SCENE_WIDTH, -SCENE_WIDTH, -2 * SCENE_WIDTH);
 
-scene.add(lights[0]);
-scene.add(lights[1]);
-//scene.add(lights[2]);
-scene.add(lights[3]);
-//scene.add(lights[4]);
+scene.add(pointLights[0]);
+scene.add(pointLights[1]);
+//scene.add(pointLights[2]);
+scene.add(pointLights[3]);
+//scene.add(pointLights[4]);
 
 
 // ------------------------------------------------------------------------------------------------
@@ -216,36 +294,23 @@ Light_1_Hue = gui.add(controls, 'Light_1_Hue', 0, 1);
 Light_1_Hue.onChange(function (value) {
   var color = new THREE.Color();
   color.setHSL(value, 1, 0.5);
-  lights[0].color = color;
+  pointLights[0].color = color;
 });
 
 Light_2_Hue = gui.add(controls, 'Light_2_Hue', 0, 1);
 Light_2_Hue.onChange(function (value) {
   var color = new THREE.Color();
   color.setHSL(value, 1, 0.5);
-  lights[1].color = color;
+  pointLights[1].color = color;
 });
-
-/*Light_3_Hue = gui.add(controls, 'Light_3_Hue', 0, 1);
-Light_3_Hue.onChange(function (value) {
-  var color = new THREE.Color();
-  color.setHSL(value, 1, 0.5);
-  lights[2].color = color;
-});*/
 
 Light_4_Hue = gui.add(controls, 'Light_4_Hue', 0, 1);
 Light_4_Hue.onChange(function (value) {
   var color = new THREE.Color();
   color.setHSL(value, 1, 0.5);
-  lights[3].color = color;
+  pointLights[3].color = color;
 });
 
-/*Light_5_Hue = gui.add(controls, 'Light_5_Hue', 0, 1);
-Light_5_Hue.onChange(function (value) {
-  var color = new THREE.Color();
-  color.setHSL(value, 1, 0.5);
-  lights[4].color = color;
-});*/
 
 Use_Smoothing = gui.add(controls, 'Use_Smoothing');
 Use_Smoothing.onChange(function (value) {
@@ -258,6 +323,11 @@ Use_Smoothing.onChange(function (value) {
 function draw() {
   requestAnimationFrame(draw);
   blob.updateSphere();
+  for (var i = 0; i < n; i++) {
+    particles[i].update();
+    particles[i].updateVelocity();
+    particles[i].updateMesh();
+  }
   render();
 }
 
