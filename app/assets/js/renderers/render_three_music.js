@@ -171,7 +171,7 @@ scene.add(parent);
 // Particle Render Prototype Methods
 
 //MusicParticle.prototype.set_hue  = function(){ this.hue = 0 }
-MusicParticle.prototype.setRadius = function(){ this.radius = Math.random() * 40; }
+//MusicParticle.prototype.setRadius = function(){ this.radius = Math.random() * 40; }
 MusicParticle.prototype.setRotation = function(){ 
   this.rotation   = new THREE.Vector3();
   this.rotation.x = this.rotation.y = this.rotation.z = 0;
@@ -184,7 +184,7 @@ MusicParticle.prototype.setRotation = function(){
 MusicParticle.prototype.createGeometry = function(){
   // http://threejs.org/docs/#Reference/Extras.Geometries/SphereGeometry
   this.geometry = new THREE.SphereGeometry()
-  this.radius = 30;
+  this.radius = 200;
   this.mesh_detail = 50;
   this.noise_detail = 11;
 }
@@ -195,7 +195,9 @@ MusicParticle.prototype.createMaterial = function(){
     color: this.color,
     specular: 0xffffff,
     intensity: 1000,
-    shininess: .9
+    shininess: .9,
+    wireframe: true,
+    wrapAround: true
   });
   this.material.transparent = false;
   this.material.opacity = 1;
@@ -229,6 +231,9 @@ MusicParticle.prototype.updateVelocity = function() {
         average += frequencyData[i];
       }
       average /= frequencyData.length;
+      if (useSmoothingTimeConstant) {
+        average *= smoothingTimeConstant;
+      }
       average += 1;
       this.velocity.x = average * this.baseVelocity.x;
       this.velocity.y = average * this.baseVelocity.y;
@@ -236,15 +241,19 @@ MusicParticle.prototype.updateVelocity = function() {
     }
 }
 
-var n = 50;
+var MAX_PARTICLES = 100;
+var currentNumParticles = 10;
 var particles = [];
-for (var i = 0; i < n; i++){
+for (var i = 0; i < MAX_PARTICLES; i++){
   var p = new MusicParticle();
   p.setWorldSize(SCENE_WIDTH, SCENE_HEIGHT, SCENE_HEIGHT);
-  p.setRadius();
+  //p.setRadius();
   p.setRotation();
   p.initMeshObj();
-  scene.add(p.mesh);
+  p.name = "particle_" + i;
+  if (i < currentNumParticles) {
+    scene.add(p.mesh);
+  }
   particles.push(p);
 }
 
@@ -263,7 +272,7 @@ pointLights[4] = new THREE.PointLight(0x6600ff, 1, 2 * SCENE_WIDTH);
 
 pointLights[0].position.set(SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
 pointLights[1].position.set(-SCENE_WIDTH, -SCENE_WIDTH, SCENE_WIDTH);
-pointLights[2].position.set(0, 1.5 * SCENE_WIDTH, -2 * SCENE_WIDTH);
+pointLights[2].position.set(0, SCENE_WIDTH, -2 * SCENE_WIDTH);
 pointLights[3].position.set(SCENE_WIDTH, SCENE_WIDTH, -2 * SCENE_WIDTH);
 pointLights[4].position.set(-SCENE_WIDTH, -SCENE_WIDTH, -2 * SCENE_WIDTH);
 
@@ -284,6 +293,7 @@ var controls = new function () {
     this.Light_4_Hue = 336.0 / 360.0;
     this.Light_5_Hue = 264.0 / 360.0
     this.Use_Smoothing = true;
+    this.Num_Particles = 10;
 }
 
 var gui = new dat.GUI();
@@ -317,13 +327,28 @@ Use_Smoothing.onChange(function (value) {
   useSmoothingTimeConstant = value;
 });
 
+Num_Particles = gui.add(controls, 'Num_Particles', 0, MAX_PARTICLES);
+Num_Particles.onChange(function (value) {
+  var newNumParticles = Math.floor(value);
+  if (newNumParticles > currentNumParticles) {
+    for (var i = currentNumParticles; i < newNumParticles; i++) {
+      scene.add(particles[i].mesh);
+    }
+  } else if (newNumParticles < currentNumParticles) {
+    for (var i = newNumParticles; i < currentNumParticles; i++) {
+      scene.remove(particles[i].mesh);
+    }
+  }
+  currentNumParticles = newNumParticles;
+});
+
 // ------------------------------------------------------------------------------------------------
 // Animate the scene
 
 function draw() {
   requestAnimationFrame(draw);
   blob.updateSphere();
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i < MAX_PARTICLES; i++) {
     particles[i].update();
     particles[i].updateVelocity();
     particles[i].updateMesh();
