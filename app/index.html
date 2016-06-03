@@ -36,10 +36,42 @@
 					<!-- begin header -->
 					<div class=".col-xs-12 .col-md-8">
 						<h1>Visualization Portfolio of Miranda Strand</h1>
-						<h4><a href='http://web.stanford.edu/~dderiso/cme151/' target='_blank'>CME 161: Data Visualization</a> <small>Spring 2016</small> <br> <a href = "cardboard.html">Cardboard</a></h4> <br> <a href = "project.html">Project </a>
+						<h4><a href='http://web.stanford.edu/~dderiso/cme151/' target='_blank'>CME 161: Data Visualization</a> <small>Spring 2016</small>
 						<hr>
 					</div>
 					<!-- end header -->
+
+					<div class=".col-xs-12 .col-md-8">
+						<h3>
+							Final Project: Music Visualizer
+						</h3>
+
+						<p>
+							Check out the browser version <a href='https://frozen-coast-36033.herokuapp.com/project'>here</a>!
+							<p>
+							This is a computational art piece that visualizes live audio captured by your browser. The possible audio frequencies are divided into 1024 buckets, with a value in each bucket representing the current level of audio at that range of frequencies. Some of the higher frequency buckets are outside of the range of human hearing, though. Because of this, I've included the option to adjust the maximum frequency bucket shown in the visualization by using the Max_Frequency_Bucket slider in the controls.
+							<p>
+							4096 spikes on the center sphere distort proportionally to particular frequency buckets. The mapping of sphere sections to buckets is nonlinear because I think it looks cooler that way. But if you'd like to look at a linear mapping of frequency buckets (repeated on each quarter of the sphere, since there are 1024 buckets and 4096 spikes), simply select the Linear_Sphere_Mapping slider in the controls.
+							<p>
+							The velocity of the wire frame particles is controlled by the average frequency across all buckets at each given point in time. By adjusting the Num_Particles slider in the controller, you can choose to include up to 100 of these particles, or remove them entirely.
+							<p>
+							You can also choose in the controls whether to use a smoothing constant in the frequency calculations. This smoothing constant is an average between the current audio buffer and the previous time step's audio buffer. Using it should result in (somewhat) smoother changes in values over time.
+							<p>
+							The visualization uses Three.js and audio capture uses the Web Audio API with getUserMedia. The audio API is somewhat experimental and is inconsistently supported by browsers. For this reason, I recommend using Google Chrome for this visualization. Live audio capture in Chrome is only supported over HTTPS, so make sure to change the URL if necessary!
+						</p>
+						<br>
+
+						<h4>Cardboard Version</h4>
+
+						<p>
+							You can check out a Google Cardboard version of this project <a href = "https://frozen-coast-36033.herokuapp.com/cardboard">here</a>.
+
+							Unfortunately, recording and even playing audio on mobile browsers is even less supported and even more inconsistent than it is on the desktop. Because playing audio is slightly more reliable than accessing the microphone, this version does not respond to live audio but instead plays a song and responds to the song's audio. However, iOS automatically mutes audio in any mobile browser (and the workarounds to unmute that bloggers found several months ago did not work for me), so sadly it will not work on iPhones at this time. It did work on the one Android phone I found.
+						</p>
+
+						<hr>
+
+					</div>
 
 					<!-- begin boid viz -->
 					<div class=".col-xs-12 .col-md-8">

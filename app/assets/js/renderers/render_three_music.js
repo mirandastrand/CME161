@@ -9,6 +9,8 @@ var analyser;
 var frequencyData;
 var useSmoothingTimeConstant = true;
 var smoothingTimeConstant = 1;
+var maxFrequencyBucket = 256;
+var linearSphereMapping = false;
 
 // Set up the Audio Context
 try {
@@ -42,6 +44,7 @@ navigator.getUserMedia({
   analyser = audioContext.createAnalyser();
   microphone.connect(analyser);
   frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  console.log(analyser.frequencyBinCount);
 }, errorFunction);
 
 // Log frequency array at regular time interval so the frequencyData array is always current
@@ -97,8 +100,8 @@ document.body.appendChild(renderer.domElement);
 // Define and add blob music visualizer
 
 var BlobMesh = function() {
-  this.mesh_detail = 50;
-  this.noise_detail = 11;
+  this.mesh_detail = 64;
+  this.noise_detail = 10;
   this.radius = 0.5 * SCENE_HEIGHT;
   this.z = 0;
 
@@ -127,6 +130,8 @@ var BlobMesh = function() {
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.position.set(0, 0, 0);
+    //console.log(this.geometry.parameters.widthSegments);
+    //console.log(this.geometry.parameters.heightSegments);
   }
 
   this.updateSphere = function() {
@@ -143,7 +148,12 @@ var BlobMesh = function() {
         var phi = this.geometry.parameters.phiStart + (xProp * this.geometry.parameters.phiLength);
 
         // Update radius based on the current frequency at the array position chosen for this vertex
-        var displacement = frequencyData[x * y % 255] * (SCENE_HEIGHT / (1.3 * 255));
+        var displacement = 0;
+        if (linearSphereMapping) {
+          displacement = frequencyData[i % maxFrequencyBucket] * (SCENE_HEIGHT / (1.3 * 255));
+        }  else {
+          displacement = frequencyData[(x * y) % maxFrequencyBucket] * (SCENE_HEIGHT / (1.3 * 255));
+        }
         if (useSmoothingTimeConstant) {
           displacement *= smoothingTimeConstant;
         }
@@ -294,6 +304,8 @@ var controls = new function () {
     this.Light_5_Hue = 264.0 / 360.0
     this.Use_Smoothing = true;
     this.Num_Particles = 10;
+    this.Max_Frequency_Bucket = 256;
+    this.Linear_Sphere_Mapping = false;
 }
 
 var gui = new dat.GUI();
@@ -340,6 +352,16 @@ Num_Particles.onChange(function (value) {
     }
   }
   currentNumParticles = newNumParticles;
+});
+
+Max_Freq_Bucket = gui.add(controls, 'Max_Frequency_Bucket', 128, 1024);
+Max_Freq_Bucket.onChange(function (value) {
+  maxFrequencyBucket = Math.floor(value);
+});
+
+Linear_Sphere_Mapping = gui.add(controls, 'Linear_Sphere_Mapping');
+Linear_Sphere_Mapping.onChange(function (value) {
+  linearSphereMapping = value;
 });
 
 // ------------------------------------------------------------------------------------------------

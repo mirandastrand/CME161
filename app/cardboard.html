@@ -113,7 +113,6 @@
         loadFile();
     }, false);*/
 
-    // FUCK IOS
     loadFile();
 
     (function() {
@@ -251,6 +250,7 @@
         }
 
         this.updateSphere = function() {
+          if (frequencyData == null) { return; }
           var vertices = this.geometry.vertices;
           var i = 0;
           for (var x = 0; x <= this.geometry.parameters.widthSegments; x++) {
