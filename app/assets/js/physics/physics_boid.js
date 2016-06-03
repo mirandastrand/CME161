@@ -1,220 +1,236 @@
-// Based on http://threejs.org/examples/canvas_geometry_birds.html ,
-// which is based on http://www.openprocessing.org/visuals/?visualID=6910
+/* 
+
+Based on work by https://github.com/wetmore, https://github.com/mrdoob/
+Modified by https://github.com/dderiso (2016) to expose alignment, separation, and cohesion as public properties 
+
+*/
 
 var Boid = function() {
 
-	var vector = new THREE.Vector3(),
-	_acceleration, _width = 500, _height = 500, _depth = 200, _goal, _neighborhoodRadius = 100,
-	_maxSpeed = 4, _maxSteerForce = 0.1, _avoidWalls = false;
+    // depends on Vector3 
+    var vector = new THREE.Vector3(),
+        _acceleration, _width = 500,
+        _height = 500,
+        _depth = 200,
+        _goal, _neighborhoodRadius = 100,
+        _maxSpeed = 4,
+        _maxSteerForce = 0.1,
+        _avoidWalls = false;
 
-	this.position = new THREE.Vector3();
-	this.velocity = new THREE.Vector3();
-	_acceleration = new THREE.Vector3();
+    this.coeff_alignment = 1,
+    this.coeff_cohesion = 1,
+    this.coeff_separation = 1;
 
-	this.setGoal = function ( target ) {
-		_goal = target;
-	}
 
-	this.setAvoidWalls = function ( value ) {
-		_avoidWalls = value;
-	}
+    this.position = new THREE.Vector3();
+    this.velocity = new THREE.Vector3();
+    _acceleration = new THREE.Vector3();
 
-	this.setWorldSize = function ( width, height, depth ) {
-		_width = width;
-		_height = height;
-		_depth = depth;
-	}
+    this.setGoal = function(target) {
+        _goal = target;
+    }
 
-	this.position.x = Math.random() * 400 - 200;
-	this.position.y = Math.random() * 400 - 200;
-	this.position.z = Math.random() * 400 - 200;
-	this.velocity.x = Math.random() * 2 - 1;
-	this.velocity.y = Math.random() * 2 - 1;
-	this.velocity.z = Math.random() * 2 - 1;
-	this.setAvoidWalls( true );
-	this.setWorldSize( 500, 500, 400 );
+    this.setAvoidWalls = function(value) {
+        _avoidWalls = value;
+    }
 
-	this.run = function ( boids ) {
+    this.setWorldSize = function(width, height, depth) {
+        _width = width;
+        _height = height;
+        _depth = depth;
+    }
 
-		if ( _avoidWalls ) {
+    this.position.x = Math.random() * 400 - 200;
+    this.position.y = Math.random() * 400 - 200;
+    this.position.z = Math.random() * 400 - 200;
+    this.velocity.x = Math.random() * 2 - 1;
+    this.velocity.y = Math.random() * 2 - 1;
+    this.velocity.z = Math.random() * 2 - 1;
+    this.setAvoidWalls(true);
+    this.setWorldSize(500, 500, 400);
 
-			vector.set( - _width, this.position.y, this.position.z );
-			vector = this.avoid( vector );
-			vector.multiplyScalar( 5 );
-			_acceleration.add( vector );
+    this.run = function(boids) {
 
-			vector.set( _width, this.position.y, this.position.z );
-			vector = this.avoid( vector );
-			vector.multiplyScalar( 5 );
-			_acceleration.add( vector );
+        if (_avoidWalls) {
 
-			vector.set( this.position.x, - _height, this.position.z );
-			vector = this.avoid( vector );
-			vector.multiplyScalar( 5 );
-			_acceleration.add( vector );
+            vector.set(-_width, this.position.y, this.position.z);
+            vector = this.avoid(vector);
+            vector.multiplyScalar(5);
+            _acceleration.add(vector);
 
-			vector.set( this.position.x, _height, this.position.z );
-			vector = this.avoid( vector );
-			vector.multiplyScalar( 5 );
-			_acceleration.add( vector );
+            vector.set(_width, this.position.y, this.position.z);
+            vector = this.avoid(vector);
+            vector.multiplyScalar(5);
+            _acceleration.add(vector);
 
-			vector.set( this.position.x, this.position.y, - _depth );
-			vector = this.avoid( vector );
-			vector.multiplyScalar( 5 );
-			_acceleration.add( vector );
+            vector.set(this.position.x, -_height, this.position.z);
+            vector = this.avoid(vector);
+            vector.multiplyScalar(5);
+            _acceleration.add(vector);
 
-			vector.set( this.position.x, this.position.y, _depth );
-			vector = this.avoid( vector );
-			vector.multiplyScalar( 5 );
-			_acceleration.add( vector );
-		}/* else {
-			this.checkBounds();
-		}
-		*/
+            vector.set(this.position.x, _height, this.position.z);
+            vector = this.avoid(vector);
+            vector.multiplyScalar(5);
+            _acceleration.add(vector);
 
-		if ( Math.random() > 0.5 ) {
-			this.flock( boids );
-		}
-		this.move();
-	}
+            vector.set(this.position.x, this.position.y, -_depth);
+            vector = this.avoid(vector);
+            vector.multiplyScalar(5);
+            _acceleration.add(vector);
 
-	this.flock = function ( boids ) {
-		if ( _goal ) {
-			_acceleration.add( this.reach( _goal, 0.005 ) );
-		}
+            vector.set(this.position.x, this.position.y, _depth);
+            vector = this.avoid(vector);
+            vector.multiplyScalar(5);
+            _acceleration.add(vector);
+        }
+        /* else {
+                    this.checkBounds();
+                }
+                */
 
-		_acceleration.add( this.alignment( boids ) );
-		_acceleration.add( this.cohesion( boids ) );
-		_acceleration.add( this.separation( boids ) );
-	}
+        if (Math.random() > 0.5) {
+            this.flock(boids);
+        }
+        this.move();
+    }
 
-	this.move = function () {
-		this.velocity.add( _acceleration );
+    this.flock = function(boids) {
+        if (_goal) {
+            _acceleration.add(this.reach(_goal, 0.005));
+        }
 
-		var l = this.velocity.length();
-		if ( l > _maxSpeed ) {
-			this.velocity.divideScalar( l / _maxSpeed );
-		}
+        _acceleration.add(this.alignment(boids).multiplyScalar(this.coeff_alignment));
+        _acceleration.add(this.cohesion(boids).multiplyScalar(this.coeff_cohesion));
+        _acceleration.add(this.separation(boids).multiplyScalar(this.coeff_separation));
+    }
 
-		this.position.add( this.velocity );
-		_acceleration.set( 0, 0, 0 );
-	}
+    this.move = function() {
+        this.velocity.add(_acceleration);
 
-	this.checkBounds = function () {
-		if ( this.position.x >   _width ) this.position.x = - _width;
-		if ( this.position.x < - _width ) this.position.x =   _width;
-		if ( this.position.y >   _height ) this.position.y = - _height;
-		if ( this.position.y < - _height ) this.position.y =  _height;
-		if ( this.position.z >  _depth ) this.position.z = - _depth;
-		if ( this.position.z < - _depth ) this.position.z =  _depth;
-	}
+        var l = this.velocity.length();
+        if (l > _maxSpeed) {
+            this.velocity.divideScalar(l / _maxSpeed);
+        }
 
-	this.avoid = function ( target ) {
-		var steer = new THREE.Vector3();
-		steer.copy( this.position );
-		steer.sub( target );
-		steer.multiplyScalar( 1 / this.position.distanceToSquared( target ) );
-		return steer;
-	}
+        this.position.add(this.velocity);
+        _acceleration.set(0, 0, 0);
+    }
 
-	this.repulse = function ( target ) {
-		var distance = this.position.distanceTo( target );
+    this.checkBounds = function() {
+        if (this.position.x > _width) this.position.x = -_width;
+        if (this.position.x < -_width) this.position.x = _width;
+        if (this.position.y > _height) this.position.y = -_height;
+        if (this.position.y < -_height) this.position.y = _height;
+        if (this.position.z > _depth) this.position.z = -_depth;
+        if (this.position.z < -_depth) this.position.z = _depth;
+    }
 
-		if ( distance < 150 ) {
-			var steer = new THREE.Vector3();
-			steer.subVectors( this.position, target );
-			steer.multiplyScalar( 0.5 / distance );
-			_acceleration.add( steer );
-		}
-	}
+    this.avoid = function(target) {
+        var steer = new THREE.Vector3();
+        steer.copy(this.position);
+        steer.sub(target);
+        steer.multiplyScalar(1 / this.position.distanceToSquared(target));
+        return steer;
+    }
 
-	this.reach = function ( target, amount ) {
-		var steer = new THREE.Vector3();
-		steer.subVectors( target, this.position );
-		steer.multiplyScalar( amount );
-		return steer;
-	}
+    this.repulse = function(target) {
+        var distance = this.position.distanceTo(target);
 
-	this.alignment = function ( boids ) {
-		var boid, velSum = new THREE.Vector3(),
-		count = 0;
+        if (distance < 150) {
+            var steer = new THREE.Vector3();
+            steer.subVectors(this.position, target);
+            steer.multiplyScalar(0.5 / distance);
+            _acceleration.add(steer);
+        }
+    }
 
-		for ( var i = 0, il = boids.length; i < il; i++ ) {
-			if ( Math.random() > 0.6 ) continue;
-			boid = boids[ i ];
-			distance = boid.position.distanceTo( this.position );
+    this.reach = function(target, amount) {
+        var steer = new THREE.Vector3();
+        steer.subVectors(target, this.position);
+        steer.multiplyScalar(amount);
+        return steer;
+    }
 
-			if ( distance > 0 && distance <= _neighborhoodRadius ) {
-				velSum.add( boid.velocity );
-				count++;
-			}
-		}
+    this.alignment = function(boids) {
+        var boid, velSum = new THREE.Vector3(),
+            count = 0;
 
-		if ( count > 0 ) {
-			velSum.divideScalar( count );
-			var l = velSum.length();
-			if ( l > _maxSteerForce ) {
-				velSum.divideScalar( l / _maxSteerForce );
-			}
-		}
+        for (var i = 0, il = boids.length; i < il; i++) {
+            if (Math.random() > 0.6) continue;
+            boid = boids[i];
+            distance = boid.position.distanceTo(this.position);
 
-		return velSum;
-	}
+            if (distance > 0 && distance <= _neighborhoodRadius) {
+                velSum.add(boid.velocity);
+                count++;
+            }
+        }
 
-	this.cohesion = function ( boids ) {
+        if (count > 0) {
+            velSum.divideScalar(count);
+            var l = velSum.length();
+            if (l > _maxSteerForce) {
+                velSum.divideScalar(l / _maxSteerForce);
+            }
+        }
 
-		var boid, distance,
-		posSum = new THREE.Vector3(),
-		steer = new THREE.Vector3(),
-		count = 0;
+        return velSum;
+    }
 
-		for ( var i = 0, il = boids.length; i < il; i ++ ) {
+    this.cohesion = function(boids) {
 
-			if ( Math.random() > 0.6 ) continue;
+        var boid, distance,
+            posSum = new THREE.Vector3(),
+            steer = new THREE.Vector3(),
+            count = 0;
 
-			boid = boids[ i ];
-			distance = boid.position.distanceTo( this.position );
+        for (var i = 0, il = boids.length; i < il; i++) {
 
-			if ( distance > 0 && distance <= _neighborhoodRadius ) {
-				posSum.add( boid.position );
-				count++;
-			}
+            if (Math.random() > 0.6) continue;
 
-		}
+            boid = boids[i];
+            distance = boid.position.distanceTo(this.position);
 
-		if ( count > 0 ) {
-			posSum.divideScalar( count );
-		}
+            if (distance > 0 && distance <= _neighborhoodRadius) {
+                posSum.add(boid.position);
+                count++;
+            }
 
-		steer.subVectors( posSum, this.position );
+        }
 
-		var l = steer.length();
+        if (count > 0) {
+            posSum.divideScalar(count);
+        }
 
-		if ( l > _maxSteerForce ) {
-			steer.divideScalar( l / _maxSteerForce );
-		}
+        steer.subVectors(posSum, this.position);
 
-		return steer;
-	}
+        var l = steer.length();
 
-	this.separation = function ( boids ) {
-		var boid, distance,
-		posSum = new THREE.Vector3(),
-		repulse = new THREE.Vector3();
+        if (l > _maxSteerForce) {
+            steer.divideScalar(l / _maxSteerForce);
+        }
 
-		for ( var i = 0, il = boids.length; i < il; i ++ ) {
-			if ( Math.random() > 0.6 ) continue;
+        return steer;
+    }
 
-			boid = boids[ i ];
-			distance = boid.position.distanceTo( this.position );
+    this.separation = function(boids) {
+        var boid, distance,
+            posSum = new THREE.Vector3(),
+            repulse = new THREE.Vector3();
 
-			if ( distance > 0 && distance <= _neighborhoodRadius ) {
-				repulse.subVectors( this.position, boid.position );
-				repulse.normalize();
-				repulse.divideScalar( distance );
-				posSum.add( repulse );
-			}
-		}
-		return posSum;
-	}
+        for (var i = 0, il = boids.length; i < il; i++) {
+            if (Math.random() > 0.6) continue;
+
+            boid = boids[i];
+            distance = boid.position.distanceTo(this.position);
+
+            if (distance > 0 && distance <= _neighborhoodRadius) {
+                repulse.subVectors(this.position, boid.position);
+                repulse.normalize();
+                repulse.divideScalar(distance);
+                posSum.add(repulse);
+            }
+        }
+        return posSum;
+    }
 }

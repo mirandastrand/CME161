@@ -181,14 +181,17 @@ scene.add(parent);
 // Light
 
 var ambientLight = new THREE.AmbientLight(0x444444);
+ambientLight.name = "ambient_light";
 scene.add(ambientLight);
 
 var directionalLight = new THREE.DirectionalLight(0xffffff);
 directionalLight.position.set(10, 10, 10).normalize();
+directionalLight.name = "directional_light";
 scene.add(directionalLight);
 
 var directionalLight2 = new THREE.DirectionalLight(0xffffff);
 directionalLight2.position.set(-10, -10, -10).normalize();
+directionalLight2.name = "directional_light";
 scene.add(directionalLight2);
 
 // ------------------------------------------------------------------------------------------------
@@ -204,56 +207,73 @@ stats.domElement.style.float = 'right';
 // ------------------------------------------------------------------------------------------------
 // add controls and GUI
 
-var controls = new function () {
-    // add your params here
-    this.x_rot_v = 0.02;
-    this.y_rot_v = 0.02;
-    this.z_rot_v = 0.02;
-    this.p_x_rot_v = 0;
-    this.p_y_rot_v = 0.01;
-    this.p_z_rot_v = 0;
-    this.ambient_light = true;
-    this.direction_light = true;
-    this.direction_light_2 = true;
-}
-
 var gui = new dat.GUI();
 document.getElementById('dat_gui_container').appendChild( gui.domElement );
-gui.add(controls, 'x_rot_v', 0, 0.5);
-gui.add(controls, 'y_rot_v', 0, 0.5);
-gui.add(controls, 'z_rot_v', 0, 0.5);
-gui.add(controls, 'p_x_rot_v', 0, 0.5);
-gui.add(controls, 'p_y_rot_v', 0, 0.5);
-gui.add(controls, 'p_z_rot_v', 0, 0.5);
 
+var controls_state = {
+    "ambient_light": true,
+    "directional_light": true,
+    "ambient_light_intensity": 1,
+    "directional_light_intensity": 1,
+    "show_axis": true,
+    "show_bounding_box": true,
+    "coeff_alignment": 1,
+    "coeff_cohesion": 1,
+    "coeff_separation": 1
+};
 
-ambient_light = gui.add(controls, 'ambient_light');
-ambient_light.onChange(function (value) {
-    if (value) {
-        scene.add(ambientLight);
-    } else {
-        scene.remove(ambientLight);
-    }
-});
+gui.add(controls_state, 'ambient_light')
+    .onChange(function(on) {
+        scene.getObjectByName('ambient_light').intensity = 1 * on;
+    });
 
-direction_light = gui.add(controls, 'direction_light');
-direction_light.onChange(function (value) {
-    if (value) {
-        scene.add(directionalLight);
-    } else {
-        scene.remove(directionalLight);
-    }
-});
+gui.add(controls_state, 'directional_light')
+    .onChange(function(on) {
+        scene.getObjectByName('directional_light').intensity = 1 * on;
+    });
 
-direction_light_2 = gui.add(controls, 'direction_light_2');
-direction_light_2.onChange(function (value) {
-    if (value) {
-        scene.add(directionalLight2);
-    } else {
-        scene.remove(directionalLight2);
-    }
-});
+gui.add(controls_state, 'ambient_light_intensity', 0, 1)
+    .onChange(function(value) {
+        scene.getObjectByName('ambient_light').intensity = value;
+    });
 
+gui.add(controls_state, 'directional_light_intensity', 0, 1)
+    .onChange(function(value) {
+        scene.getObjectByName('directional_light').intensity = value;
+    });
+
+gui.add(controls_state, 'show_axis')
+    .onChange(function(on) {
+        if (on) { parent.add(axes);    } 
+        else    { parent.remove(axes); }
+    });
+
+gui.add(controls_state, 'show_bounding_box')
+    .onChange(function(on) {
+        if (on) { parent.add(bounding_box);    } 
+        else    { parent.remove(bounding_box); }
+    });
+
+gui.add(controls_state, 'coeff_alignment', 0, 10)
+    .onChange(function(value) {
+        for (var i = 0; i < n; i++) {
+            data[i].coeff_alignment = value;
+        }
+    });
+
+gui.add(controls_state, 'coeff_cohesion', 0, 10)
+    .onChange(function(value) {
+        for (var i = 0; i < n; i++) {
+            data[i].coeff_cohesion = value;
+        }
+    });
+
+gui.add(controls_state, 'coeff_separation', 0, 10)
+    .onChange(function(value) {
+        for (var i = 0; i < n; i++) {
+            data[i].coeff_separation = value;
+        }
+    });
 
 // ------------------------------------------------------------------------------------------------
 // draw loop
@@ -268,9 +288,9 @@ function draw() {
 		data[i].update_mesh();
 	}
 
-    parent.rotation.x += controls.p_x_rot_v;
+    /*parent.rotation.x += controls_state.p_x_rot_v;
     parent.rotation.y += controls.p_y_rot_v;
-    parent.rotation.z += controls.p_z_rot_v;
+    parent.rotation.z += controls.p_z_rot_v;*/
 
     // render scene
     renderer.render(scene, camera);
